@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <title>Wordle Helper</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <script type="text/javascript" src="src/index.js" defer></script>
+    <script type="text/javascript" src="index.js" defer></script>
   </head>
   <body>
     <header>
       <h1>WORDLE Helper</h1>
     </header>
     <main>
-      <div>
-        <form id="letter-state">
+      <form id="letter-state">
+        <div id="greens">
           <label for="first-letter">Correctly-placed (green) letters:</label>
           <span>
             <input type="text" class="enter-letter" name="first-letter" id="first-letter" />
@@ -29,13 +29,22 @@
           <span>
             <input type="text" class="enter-letter" name="fifth-letter" id="fifth-letter" />
           </span>
-          <br/>
+        </div>
+        <div id="yellows">
           <label for="yellow-letters">Used letters with unknown place (yellow):</label>
           <input type="text" class="yellow-letters" name="yellow-letters" id="yellow-letters" />
-          <br/>
+        </div>
+        <div id="blacks">
           <label for="black-letters">Letters known to be unused (black):</label>
           <input type="text" class="black-letters" name="black-letters" id="black-letters" />
-        </form>
+        </div>
+        <div>
+          <button type="submit" class="submit-button" name="submit" id="submit">Find matching words</button>
+        </div>
+      </form>
+      <div>
+        <ul id="results" class="result-list">
+        </ul>
       </div>
     </main>
     <footer>
