@@ -11,24 +11,27 @@
       <h1>WORDLE Helper</h1>
     </header>
     <main>
-      <div id="correct-letters">
-        <h2>Please enter any correctly-placed letters:</h2>
-        <form id="correct-form">
+      <div>
+        <form id="letter-state">
+          <label for="first-letter">Correctly-placed (green) letters:</label>
           <span>
-            <input class="enter-letter">
+            <input type="text" class="enter-letter" name="first-letter" id="first-letter"/>
           </span>
           <span>
-            <input class="enter-letter">
+            <input type="text" class="enter-letter" name="second-letter" id="second-letter"/>
           </span>
           <span>
-            <input class="enter-letter">
+            <input type="text" class="enter-letter" name="third-letter" id="third-letter"/>
           </span>
           <span>
-            <input class="enter-letter">
+            <input type="text" class="enter-letter" name="fourth-letter" id="fourth-letter"/>
           </span>
           <span>
-            <input class="enter-letter">
+            <input type="text" class="enter-letter" name="fifth-letter" id="fifth-letter"/>
           </span>
+          <br/>
+          <label for="yellow-letters">Used letters with unknown place (yellow):</label>
+          <input type="text" class="yellow-letters" name="yellow-letters" id="yellow-letters"/>
         </form>
       </div>
     </main>
