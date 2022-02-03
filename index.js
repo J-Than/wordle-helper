@@ -2,12 +2,27 @@
 let knownLetters = ['','','','',''];
 let goodLetters;
 let badLetters;
+let allWords;
+let possibleWords;
+
+// Pull in word list
+fetch ('wordlist.json')
+.then (r => r.json())
+.then ((j) => {
+  let wordArray = [];
+  for (let i=0; i < j.length; i++) {
+    wordArray.push(j[i]['word']);
+  }
+  allWords = wordArray;
+  possibleWords = wordArray;
+})
 
 // Add event listeners
 document.getElementById('letter-state').addEventListener('submit', (e) => {
   e.preventDefault();
   storeLetters();
-  searchWords();
+  matchWords();
+  printWords();
 })
 
 // Store letters for use in search
@@ -22,3 +37,20 @@ function storeLetters() {
 }
 
 // Search for words that match the given parameters
+function matchWords() {
+  let newWords = possibleWords;
+  for (let i=0; i < 5; i++) {
+    if (knownLetters[i]) {
+      newWords = possibleWords.filter(word => 
+        word.charAt(i) === knownLetters[i]
+      )
+    }
+    possibleWords = newWords;
+  }
+}
+
+// Prints words
+function printWords() {
+  console.log(possibleWords);
+  console.log(knownLetters);
+}
