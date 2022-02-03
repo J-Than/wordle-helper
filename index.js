@@ -47,10 +47,21 @@ function matchWords() {
     }
     possibleWords = newWords;
   }
+  for (let i=0; i < goodLetters.length; i++) {
+    newWords = possibleWords.filter(word =>
+      word.includes(goodLetters[i])
+    )
+    possibleWords = newWords;
+  }
+  for (let i=0; i < badLetters.length; i++) {
+    newWords = possibleWords.filter(word =>
+      !word.includes(badLetters[i])
+    )
+    possibleWords = newWords
+  }
 }
 
 // Prints words
 function printWords() {
   console.log(possibleWords);
-  console.log(knownLetters);
 }
