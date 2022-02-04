@@ -23,6 +23,7 @@ fetch ('answerlist.json')
 const displayGuess = function() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
   document.getElementById('word-entry').hidden=true;
+  document.getElementById('word-entry').reset();
   document.getElementById('word-confirm').hidden=false;
 }
 
@@ -81,16 +82,6 @@ const populateGuess = function() {
   }
 }
 
-// Handles storing data from colors
-const confirmColors = function() {
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
-    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
-    currentButton.removeEventListener('click', colorChanger);
-  }
-  newGuess();
-}
-
 // Search for words that match the given parameters
 const matchWords = function() {
   let newWords = possibleWords;
@@ -114,6 +105,26 @@ const matchWords = function() {
     )
     possibleWords = newWords
   }
+  for (let i=0; i < 5; i++) {
+    for (let j=0; j < badPosition[i].length; j++) {
+      newWords = possibleWords.filter(word => 
+        word.charAt(i) !== badPosition[i][j]
+      )
+      possibleWords = newWords;
+    }
+  }
+}
+
+// Handles storing data from colors
+const confirmColors = function() {
+  for (let i=0; i<5; i++) {
+    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
+    currentButton.removeEventListener('click', colorChanger);
+  }
+  matchWords();
+  printWords();
+  newGuess();
 }
 
 // Add event listeners
