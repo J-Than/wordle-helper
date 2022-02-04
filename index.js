@@ -2,6 +2,12 @@
 let knownLetters = ['','','','',''];
 let goodLetters;
 let badLetters;
+let badPositionOne;
+let badPositionTwo;
+let badPositionThree;
+let badPositionFour;
+let badPositionFive;
+let currentWord = 1;
 let allWords;
 let possibleWords;
 
@@ -18,12 +24,25 @@ fetch ('answerlist.json')
 })
 
 // Add event listeners
-document.getElementById('letter-state').addEventListener('submit', (e) => {
+document.getElementById('word-form').addEventListener('submit', (e) => {
   e.preventDefault();
-  storeLetters();
-  matchWords();
-  printWords();
+  populateGuess();
+  displayGuess();
 })
+
+// Populate the letters from the most recent guess
+function populateGuess() {
+  let wordArray = document.getElementById('word-guess').value.toUpperCase();
+  for (let i=0; i<5; i++) {
+    document.getElementById(`guess-${currentWord}-${i+1}`).textContent = wordArray[i];
+  }
+}
+
+// Display the most recent guess submission in the table
+function displayGuess() {
+
+  document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+}
 
 // Store letters for use in search
 function storeLetters() {
