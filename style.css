@@ -1,3 +1,8 @@
+body * {
+  font-family: Helvetica Neue, Arial, sans-serif;
+}
+
+
 .enter-letter {
   width: 20px;
   background-color: white;
@@ -20,4 +25,13 @@
   color: white;
   text-align: left;
   text-transform: uppercase;
+}
+
+.neutral-letter {
+  width: 50px;
+  height: 50px;
+  font-size: 26pt;
+  background-color: gray;
+  color: white;
+  text-shadow: black;
 }
