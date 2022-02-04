@@ -27,7 +27,41 @@ const reset = function() {
 
 // Confirm submission of a new word
 const confirmSubmit = function() {
-  
+  if (window.confirm('Are you sure? You can set the colors of each letter by clicking on them.')) {confirmColors();};
+}
+
+// Handles updating color of buttons on current guess
+const colorChanger = function(event) {
+  let button = event.target;
+  if (button.className === 'yellow-letter') {
+    button.className = 'green-letter';
+  } else if (button.className === 'black-letter') {
+    button.className = 'yellow-letter';
+  } else {
+    button.className = 'black-letter';
+  }
+}
+
+// Add listener for current letter button
+const activateButton = function(button) {
+  button.addEventListener('click', colorChanger)
+}
+
+// Sets button color based on prior guesses
+const setButtonColor = function(button, index) {
+  if (button.textContent.toLowerCase() === knownLetters[index]) {
+    button.className = 'green-letter';
+    button.removeEventListener('click', colorChanger);
+  } else if (goodLetters.includes(button.textContent.toLowerCase())) {
+    button.className = 'yellow-letter';
+  } else if (badLetters.includes(button.textContent.toLowerCase())) {
+    button.className = 'black-letter';
+    button.removeEventListener('click', colorChanger);
+  } else if (button.textContent === '-') {
+    button.className = 'neutral-letter';
+  } else {
+    button.className = 'black-letter';
+  }
 }
 
 // Puts the most recently typed letter into the guess boxes
@@ -38,7 +72,8 @@ const setLetter = function(e) {
   } else if (e.which === 8) {
     if (currentLetter > 0) {currentLetter--;}
     currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
-    currentButton.textContent = '';
+    currentButton.textContent = '-';
+    setButtonColor(currentButton, currentLetter);
   } else if (e.which > 64 && e.which < 91) {
     currentButton.textContent = e.key.toUpperCase();
     activateButton(currentButton);
@@ -60,30 +95,6 @@ const newGuess = function() {
   currentWord++;
   currentLetter = 0;
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
-}
-
-// Sets button color based on prior guesses
-const setButtonColor = function(button, index) {
-  if (button.textContent.toLowerCase() === knownLetters[index]) {
-    button.className = 'green-letter';
-    button.removeEventListener('click', colorChanger);
-  } else if (goodLetters.includes(button.textContent.toLowerCase())) {
-    button.className = 'yellow-letter';
-  } else if (badLetters.includes(button.textContent.toLowerCase())) {
-    button.removeEventListener('click', colorChanger);
-  }
-}
-
-// Handles updating color of buttons on current guess
-const colorChanger = function(event) {
-  let button = event.target;
-  if (button.className === 'yellow-letter') {
-    button.className = 'green-letter';
-  } else if (button.className === 'black-letter') {
-    button.className = 'yellow-letter';
-  } else {
-    button.className = 'black-letter';
-  }
 }
 
 // Store letter for use in search
@@ -119,11 +130,6 @@ const printWords = function() {
     newLi.textContent = word;
     ul.appendChild(newLi);
   }
-}
-
-// Add listener for current letter button
-const activateButton = function(button) {
-  button.addEventListener('click', colorChanger)
 }
 
 // Populate the letters from the most recent guess
@@ -185,13 +191,5 @@ const confirmColors = function() {
 
 // Add event listeners
 window.addEventListener('keydown', setLetter)
-
-// document.getElementById('word-entry').addEventListener('submit', (e) => {
-//   e.preventDefault();
-//   populateGuess();
-//   displayGuess();
-// })
-
-// document.getElementById('confirm-word').addEventListener('click', confirmColors);
 
 document.getElementById('reset').addEventListener('click', reset);
