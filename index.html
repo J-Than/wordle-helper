@@ -11,13 +11,15 @@
       <h1>WORDLE Helper</h1>
     </header>
     <main>
-      <div id="word-form">
         <form id="word-entry">
           <label for="word-guess">First guess:</label>
           <input type="text" class="guess-word" name="word-guess" id="word-guess" />
           <button type="submit" class="submit-button" name="submit-word" id="submit-word">Submit</button>
         </form>
-      </div>
+        <div id="word-confirm" hidden>
+            <p>Click letters to change colors.
+            <button type="button" class="submit-button" name="confirm-word" id="confirm-word">Confirm</button></p>
+        </div>
       <br />
       <div id="word-boxes-1" hidden>
         <button type="button" class="neutral-letter" name="guess-1-1" id="guess-1-1"></button>

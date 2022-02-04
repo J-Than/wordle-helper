@@ -24,7 +24,7 @@ fetch ('answerlist.json')
 })
 
 // Add event listeners
-document.getElementById('word-form').addEventListener('submit', (e) => {
+document.getElementById('word-entry').addEventListener('submit', (e) => {
   e.preventDefault();
   populateGuess();
   displayGuess();
@@ -43,6 +43,8 @@ function populateGuess() {
 // Display the most recent guess submission in the table
 function displayGuess() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+  document.getElementById('word-entry').hidden=true;
+  document.getElementById('word-confirm').hidden=false;
 }
 
 // Add listener for current letter button
@@ -54,10 +56,10 @@ function activateButton(button) {
 function colorChanger(button) {
   if (button.className === 'yellow-letter') {
     button.className = 'green-letter';
-  } else if (button.className === 'green-letter') {
-    button.className = 'black-letter';
-  } else {
+  } else if (button.className === 'black-letter') {
     button.className = 'yellow-letter';
+  } else {
+    button.className = 'black-letter';
   }
 }
 
