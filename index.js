@@ -30,6 +30,11 @@ const confirmSubmit = function() {
   if (window.confirm('Are you sure? You can set the colors of each letter by clicking on them.')) {confirmColors();};
 }
 
+// Throw error for incomplete word
+const incompleteWordError = function() {
+  window.alert('You have not filled out all of the letters.');
+}
+
 // Handles updating color of buttons on current guess
 const colorChanger = function(event) {
   let button = event.target;
@@ -68,7 +73,12 @@ const setButtonColor = function(button, index) {
 const setLetter = function(e) {
   let currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
   if (e.which === 13) {
-    confirmSubmit();
+    if (currentLetter < 5) {
+      incompleteWordError();
+      return false;
+    } else {
+      confirmSubmit();
+    }
   } else if (e.which === 8) {
     if (currentLetter > 0) {currentLetter--;}
     currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
@@ -122,7 +132,7 @@ const storeLetter = function(letter, color, position) {
 
 // Prints words
 const printWords = function() {
-  document.querySelector('h2').hidden = false;
+  document.querySelector('h2').textContent = `Possible words (${possibleWords.length}):`;
   const ul = document.getElementById('results');
   ul.replaceChildren();
   for (word of possibleWords) {
