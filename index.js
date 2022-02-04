@@ -19,45 +19,23 @@ fetch ('answerlist.json')
   possibleWords = wordArray;
 })
 
-// Add event listeners
-document.getElementById('word-entry').addEventListener('submit', (e) => {
-  e.preventDefault();
-  populateGuess();
-  displayGuess();
-})
-document.getElementById('confirm-word').addEventListener('click', (e) => confirmColors(e))
-
-// Populate the letters from the most recent guess
-function populateGuess() {
-  let wordArray = document.getElementById('word-guess').value.toUpperCase();
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
-    currentButton.textContent = wordArray[i];
-    activateButton(currentButton)
-  }
-}
-
 // Display the most recent guess submission in the table
-function displayGuess() {
+const displayGuess = function() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
   document.getElementById('word-entry').hidden=true;
   document.getElementById('word-confirm').hidden=false;
 }
 
 // Lines up a new guess
-function newGuess() {
+const newGuess = function() {
   currentWord++;
   document.getElementById('word-entry').hidden=false;
   document.getElementById('word-confirm').hidden=true;
 }
 
-// Add listener for current letter button
-function activateButton(button) {
-  button.addEventListener('click', e => colorChanger(e.target))
-}
-
 // Handles updating color of buttons on current guess
-function colorChanger(button) {
+const colorChanger = function(event) {
+  let button = event.target;
   if (button.className === 'yellow-letter') {
     button.className = 'green-letter';
   } else if (button.className === 'black-letter') {
@@ -67,22 +45,8 @@ function colorChanger(button) {
   }
 }
 
-// Handles storing data from colors
-function confirmColors() {
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
-    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
-    currentButton.removeEventListener('click', colorChanger);
-  }
-  console.log(knownLetters);
-  console.log(goodLetters);
-  console.log(badLetters);
-  console.log(badPosition);
-  newGuess();
-}
-
 // Store letter for use in search
-function storeLetter(letter, color, position) {
+const storeLetter = function(letter, color, position) {
   if (color === 'green-letter') {
     knownLetters[position] = letter;
   } else if (color === 'yellow-letter') {
@@ -97,8 +61,38 @@ function storeLetter(letter, color, position) {
   }
 }
 
+// Prints words
+const printWords = function() {
+  console.log(possibleWords);
+}
+
+// Add listener for current letter button
+const activateButton = function(button) {
+  button.addEventListener('click', colorChanger)
+}
+
+// Populate the letters from the most recent guess
+const populateGuess = function() {
+  let wordArray = document.getElementById('word-guess').value.toUpperCase();
+  for (let i=0; i<5; i++) {
+    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    currentButton.textContent = wordArray[i];
+    activateButton(currentButton)
+  }
+}
+
+// Handles storing data from colors
+const confirmColors = function() {
+  for (let i=0; i<5; i++) {
+    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
+    currentButton.removeEventListener('click', colorChanger);
+  }
+  newGuess();
+}
+
 // Search for words that match the given parameters
-function matchWords() {
+const matchWords = function() {
   let newWords = possibleWords;
   for (let i=0; i < 5; i++) {
     if (knownLetters[i]) {
@@ -122,7 +116,10 @@ function matchWords() {
   }
 }
 
-// Prints words
-function printWords() {
-  console.log(possibleWords);
-}
+// Add event listeners
+document.getElementById('word-entry').addEventListener('submit', (e) => {
+  e.preventDefault();
+  populateGuess();
+  displayGuess();
+})
+document.getElementById('confirm-word').addEventListener('click', confirmColors);
