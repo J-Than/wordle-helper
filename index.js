@@ -19,6 +19,11 @@ fetch ('answerlist.json')
   possibleWords = wordArray;
 })
 
+// Resets the page
+const reset = function() {
+  window.location.reload();
+}
+
 // Display the most recent guess submission in the table
 const displayGuess = function() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
@@ -144,5 +149,7 @@ document.getElementById('word-entry').addEventListener('submit', (e) => {
   e.preventDefault();
   populateGuess();
   displayGuess();
+  document.getElementById('reset').hidden = false;
 })
 document.getElementById('confirm-word').addEventListener('click', confirmColors);
+document.getElementById('reset').addEventListener('click', reset);
