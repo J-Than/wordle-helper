@@ -34,14 +34,32 @@ document.getElementById('word-form').addEventListener('submit', (e) => {
 function populateGuess() {
   let wordArray = document.getElementById('word-guess').value.toUpperCase();
   for (let i=0; i<5; i++) {
-    document.getElementById(`guess-${currentWord}-${i+1}`).textContent = wordArray[i];
+    const currentButton = document.getElementById(`guess-${currentWord}-${i+1}`);
+    currentButton.textContent = wordArray[i];
+    activateButton(currentButton)
   }
 }
 
 // Display the most recent guess submission in the table
 function displayGuess() {
-
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+}
+
+// Add listeners for current set of letter buttons
+function activateButton(button) {
+  button.addEventListener('click', colorChanger(button))
+}
+
+// Handles updating color of buttons on current guess
+function colorChanger(button) {
+  if (button.classname === 'yellow-letter') {
+    button.classname = 'green-letter';
+  } else if (button.classname === 'green-letter') {
+    button.classname = 'black-letter';
+  } else {
+    button.classname = 'yellow-letter';
+  }
+  console.log('Clicked!');
 }
 
 // Store letters for use in search
