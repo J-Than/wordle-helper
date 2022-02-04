@@ -2,12 +2,8 @@
 let knownLetters = ['','','','',''];
 let goodLetters = [];
 let badLetters = [];
-let badPosition1 = [];
-let badPosition2 = [];
-let badPosition3 = [];
-let badPosition4 = [];
-let badPosition5 = [];
-let currentWord = 1;
+let badPosition = [[],[],[],[],[]];
+let currentWord = 0;
 let allWords;
 let possibleWords;
 
@@ -35,7 +31,7 @@ document.getElementById('confirm-word').addEventListener('click', (e) => confirm
 function populateGuess() {
   let wordArray = document.getElementById('word-guess').value.toUpperCase();
   for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i+1}`);
+    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
     currentButton.textContent = wordArray[i];
     activateButton(currentButton)
   }
@@ -67,18 +63,19 @@ function colorChanger(button) {
 // Handles storing data from colors
 function confirmColors() {
   for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i+1}`);
-    storeLetters(currentButton.textContent.toLowerCase(), currentButton.className, i+1);
+    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
+    currentButton.removeEventListener('click', colorChanger)
   }
 }
 
-// Store letters for use in search
-function storeLetters(letter, color, position) {
+// Store letter for use in search
+function storeLetter(letter, color, position) {
   if (color === 'green-letter') {
     knownLetters[position] = letter;
   } else if (color === 'yellow-letter') {
     goodLetters.push(letter);
-    `badPosition${position}`.push(letter);
+    badPosition[position].push(letter);
   } else {
     badLetters.push(letter);
   }
