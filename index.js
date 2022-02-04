@@ -45,9 +45,9 @@ function displayGuess() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
 }
 
-// Add listeners for current set of letter buttons
+// Add listener for current letter button
 function activateButton(button) {
-  button.addEventListener('click', colorChanger(button))
+  button.addEventListener('click', e => colorChanger(e.target))
 }
 
 // Handles updating color of buttons on current guess
@@ -59,7 +59,7 @@ function colorChanger(button) {
   } else {
     button.classname = 'yellow-letter';
   }
-  console.log('Clicked!');
+  console.log(`${button.textContent} clicked!`);
 }
 
 // Store letters for use in search
