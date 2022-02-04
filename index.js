@@ -39,6 +39,18 @@ const newGuess = function() {
   document.getElementById('word-confirm').hidden=true;
 }
 
+// Sets button color based on prior guesses
+const setButtonColor = function(button, index) {
+  if (button.textContent.toLowerCase() === knownLetters[index]) {
+    button.className = 'green-letter';
+    button.removeEventListener('click', colorChanger);
+  } else if (goodLetters.includes(button.textContent.toLowerCase())) {
+    button.className = 'yellow-letter';
+  } else if (badLetters.includes(button.textContent.toLowerCase())) {
+    button.removeEventListener('click', colorChanger);
+  }
+}
+
 // Handles updating color of buttons on current guess
 const colorChanger = function(event) {
   let button = event.target;
@@ -55,6 +67,9 @@ const colorChanger = function(event) {
 const storeLetter = function(letter, color, position) {
   if (color === 'green-letter') {
     knownLetters[position] = letter;
+    if (!goodLetters.includes(letter)) {
+      goodLetters.push(letter);
+    }
   } else if (color === 'yellow-letter') {
     if (!goodLetters.includes(letter)) {
       goodLetters.push(letter);
@@ -95,7 +110,8 @@ const populateGuess = function() {
   for (let i=0; i<5; i++) {
     const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
     currentButton.textContent = wordArray[i];
-    activateButton(currentButton)
+    activateButton(currentButton);
+    setButtonColor(currentButton, i);
   }
 }
 
