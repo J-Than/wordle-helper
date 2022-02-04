@@ -1,12 +1,12 @@
 // Declare universal variables
 let knownLetters = ['','','','',''];
-let goodLetters;
-let badLetters;
-let badPositionOne;
-let badPositionTwo;
-let badPositionThree;
-let badPositionFour;
-let badPositionFive;
+let goodLetters = [];
+let badLetters = [];
+let badPosition1 = [];
+let badPosition2 = [];
+let badPosition3 = [];
+let badPosition4 = [];
+let badPosition5 = [];
 let currentWord = 1;
 let allWords;
 let possibleWords;
@@ -29,6 +29,7 @@ document.getElementById('word-entry').addEventListener('submit', (e) => {
   populateGuess();
   displayGuess();
 })
+document.getElementById('confirm-word').addEventListener('click', (e) => confirmColors(e))
 
 // Populate the letters from the most recent guess
 function populateGuess() {
@@ -63,15 +64,24 @@ function colorChanger(button) {
   }
 }
 
+// Handles storing data from colors
+function confirmColors() {
+  for (let i=0; i<5; i++) {
+    const currentButton = document.getElementById(`guess-${currentWord}-${i+1}`);
+    storeLetters(currentButton.textContent.toLowerCase(), currentButton.className, i+1);
+  }
+}
+
 // Store letters for use in search
-function storeLetters() {
-  knownLetters[0] = document.getElementById('first-letter').value.toLowerCase();
-  knownLetters[1] = document.getElementById('second-letter').value.toLowerCase();
-  knownLetters[2] = document.getElementById('third-letter').value.toLowerCase();
-  knownLetters[3] = document.getElementById('fourth-letter').value.toLowerCase();
-  knownLetters[4] = document.getElementById('fifth-letter').value.toLowerCase();
-  goodLetters = document.getElementById('yellow-letters').value.toLowerCase().split('');
-  badLetters = document.getElementById('black-letters').value.toLowerCase().split('');
+function storeLetters(letter, color, position) {
+  if (color === 'green-letter') {
+    knownLetters[position] = letter;
+  } else if (color === 'yellow-letter') {
+    goodLetters.push(letter);
+    `badPosition${position}`.push(letter);
+  } else {
+    badLetters.push(letter);
+  }
 }
 
 // Search for words that match the given parameters
