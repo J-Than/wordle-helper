@@ -4,6 +4,7 @@ let goodLetters = [];
 let badLetters = [];
 let badPosition = [[],[],[],[],[]];
 let currentWord = 0;
+let currentLetter = 0;
 let allWords;
 let possibleWords;
 
@@ -24,6 +25,28 @@ const reset = function() {
   window.location.reload();
 }
 
+// Confirm submission of a new word
+const confirmSubmit = function() {
+  
+}
+
+// Puts the most recently typed letter into the guess boxes
+const setLetter = function(e) {
+  let currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
+  if (e.which === 13) {
+    confirmSubmit();
+  } else if (e.which === 8) {
+    if (currentLetter > 0) {currentLetter--;}
+    currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
+    currentButton.textContent = '';
+  } else if (e.which > 64 && e.which < 91) {
+    currentButton.textContent = e.key.toUpperCase();
+    activateButton(currentButton);
+    setButtonColor(currentButton, currentLetter);
+    if (currentLetter < 5) {currentLetter++;}
+  } else {return false};
+}
+
 // Display the most recent guess submission in the table
 const displayGuess = function() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
@@ -35,8 +58,8 @@ const displayGuess = function() {
 // Lines up a new guess
 const newGuess = function() {
   currentWord++;
-  document.getElementById('word-entry').hidden=false;
-  document.getElementById('word-confirm').hidden=true;
+  currentLetter = 0;
+  document.getElementById(`word-boxes-${currentWord}`).hidden=false;
 }
 
 // Sets button color based on prior guesses
@@ -96,7 +119,6 @@ const printWords = function() {
     newLi.textContent = word;
     ul.appendChild(newLi);
   }
-  console.log(possibleWords);
 }
 
 // Add listener for current letter button
@@ -157,15 +179,19 @@ const confirmColors = function() {
   }
   matchWords();
   printWords();
+  document.getElementById('reset').hidden = false;
   newGuess();
 }
 
 // Add event listeners
-document.getElementById('word-entry').addEventListener('submit', (e) => {
-  e.preventDefault();
-  populateGuess();
-  displayGuess();
-  document.getElementById('reset').hidden = false;
-})
-document.getElementById('confirm-word').addEventListener('click', confirmColors);
+window.addEventListener('keydown', setLetter)
+
+// document.getElementById('word-entry').addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   populateGuess();
+//   displayGuess();
+// })
+
+// document.getElementById('confirm-word').addEventListener('click', confirmColors);
+
 document.getElementById('reset').addEventListener('click', reset);
