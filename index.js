@@ -44,6 +44,13 @@ function displayGuess() {
   document.getElementById('word-confirm').hidden=false;
 }
 
+// Lines up a new guess
+function newGuess() {
+  currentWord++;
+  document.getElementById('word-entry').hidden=false;
+  document.getElementById('word-confirm').hidden=true;
+}
+
 // Add listener for current letter button
 function activateButton(button) {
   button.addEventListener('click', e => colorChanger(e.target))
@@ -65,8 +72,13 @@ function confirmColors() {
   for (let i=0; i<5; i++) {
     const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
     storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
-    currentButton.removeEventListener('click', colorChanger)
+    currentButton.removeEventListener('click', colorChanger);
   }
+  console.log(knownLetters);
+  console.log(goodLetters);
+  console.log(badLetters);
+  console.log(badPosition);
+  newGuess();
 }
 
 // Store letter for use in search
@@ -74,9 +86,13 @@ function storeLetter(letter, color, position) {
   if (color === 'green-letter') {
     knownLetters[position] = letter;
   } else if (color === 'yellow-letter') {
-    goodLetters.push(letter);
-    badPosition[position].push(letter);
-  } else {
+    if (!goodLetters.includes(letter)) {
+      goodLetters.push(letter);
+    }
+    if (!badPosition[position].includes(letter)) {
+      badPosition[position].push(letter);
+    }
+  } else if (!badLetters.includes(letter)) {
     badLetters.push(letter);
   }
 }
