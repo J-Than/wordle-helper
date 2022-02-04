@@ -52,14 +52,13 @@ function activateButton(button) {
 
 // Handles updating color of buttons on current guess
 function colorChanger(button) {
-  if (button.classname === 'yellow-letter') {
-    button.classname = 'green-letter';
-  } else if (button.classname === 'green-letter') {
-    button.classname = 'black-letter';
+  if (button.className === 'yellow-letter') {
+    button.className = 'green-letter';
+  } else if (button.className === 'green-letter') {
+    button.className = 'black-letter';
   } else {
-    button.classname = 'yellow-letter';
+    button.className = 'yellow-letter';
   }
-  console.log(`${button.textContent} clicked!`);
 }
 
 // Store letters for use in search
