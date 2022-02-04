@@ -6,7 +6,7 @@ let allWords;
 let possibleWords;
 
 // Pull in word list
-fetch ('wordlist.json')
+fetch ('answerlist.json')
 .then (r => r.json())
 .then ((j) => {
   let wordArray = [];
