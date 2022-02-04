@@ -58,12 +58,24 @@ const storeLetter = function(letter, color, position) {
       badPosition[position].push(letter);
     }
   } else if (!badLetters.includes(letter)) {
-    badLetters.push(letter);
+    if (!knownLetters.includes(letter)) {
+      if (!goodLetters.includes(letter)) {
+        badLetters.push(letter);
+      }
+    }
   }
 }
 
 // Prints words
 const printWords = function() {
+  document.querySelector('h2').hidden = false;
+  const ul = document.getElementById('results');
+  ul.replaceChildren();
+  for (word of possibleWords) {
+    let newLi = document.createElement('li');
+    newLi.textContent = word;
+    ul.appendChild(newLi);
+  }
   console.log(possibleWords);
 }
 
