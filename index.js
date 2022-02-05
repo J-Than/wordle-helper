@@ -25,12 +25,6 @@ class Letter {
     updateAllColors();
   }
 
-  resetColor(index) {
-    this.slot[index] = 0;
-    this.storeKeyboardColor();
-    updateAllColors();
-  }
-
   storeKeyboardColor() {
     this.keyboard = Math.max(...this.slot);
     // updateKeyboardColor();
@@ -115,7 +109,6 @@ const setLetter = function(e) {
   } else if (e.which === 8) {
     if (currentLetter > 0) {currentLetter--;}
     currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-    letters[currentButton.textContent.toLowerCase()].resetColor(currentLetter);
     currentButton.textContent = '-';
     currentButton.className = 'no-letter';
     deactivateButton(currentButton);
