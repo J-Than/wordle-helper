@@ -6,51 +6,45 @@ p + p, li + li, div + div {
   margin-top: 4px;
 }
 
-.yellow-letter {
+.yellow-letter, .green-letter, .black-letter, .white-letter, .no-letter {
   width: 50px;
   height: 50px;
   font-size: 26pt;
+  color: white;
+  text-shadow: black;
+  text-transform: uppercase;
+}
+
+.yellow-key, .green-key, .black-key, .white-key {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  font-size: 12pt;
+  font-style: bold;
+  color: white;
+  text-shadow: black;
+  text-transform: uppercase;
+}
+
+.yellow-letter, .yellow-key {
   background-color: goldenrod;
-  color: white;
-  text-shadow: black;
-  text-transform: uppercase;
 }
 
-.green-letter {
-  width: 50px;
-  height: 50px;
-  font-size: 26pt;
+.green-letter, .green-key {
   background-color: forestgreen;
-  color: white;
-  text-shadow: black;
-  text-transform: uppercase;
 }
 
-.black-letter {
-  width: 50px;
-  height: 50px;
-  font-size: 26pt;
+.black-letter, .black-key {
   background-color: #444;
-  color: white;
-  text-shadow: #444;
-  text-transform: uppercase;
 }
 
-.white-letter {
-  width: 50px;
-  height: 50px;
-  font-size: 26pt;
+.white-letter, .white-key {
   background-color: lightgrey;
   color: black;
-  text-shadow: black;
-  text-transform: uppercase;
 }
 
 .no-letter {
-  width: 50px;
-  height: 50px;
-  font-size: 26pt;
   background-color: lightgrey;
   color: lightgrey;
-  text-transform: uppercase;
+  text-shadow: lightgrey;
 }
