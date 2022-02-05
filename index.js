@@ -25,6 +25,12 @@ class Letter {
     updateAllColors();
   }
 
+  resetColor(index) {
+    this.slot[index] = 0;
+    this.storeKeyboardColor();
+    updateAllColors();
+  }
+
   storeKeyboardColor() {
     this.keyboard = Math.max(...this.slot);
     // updateKeyboardColor();
@@ -65,7 +71,13 @@ const spotColorChanger = function(event) {
 
 // Updates color of slot button
 const updateSlotColor = function(button, index) {
-  button.className = colorArray[letters[button.textContent.toLowerCase()].slot[index]];
+  color = letters[button.textContent.toLowerCase()].slot[index]
+  button.className = colorArray[color];
+  if (color === 0) {
+    activateButton(button);
+  } else if (color === 2) {
+    activateButton(button);
+  }
 }
 
 // Update colors of all elements
@@ -79,9 +91,15 @@ const updateAllColors = function() {
     }
   }
 }
+
 // Add listener for current letter button
 const activateButton = function(button) {
   button.addEventListener('click', spotColorChanger)
+}
+
+// Remove listener for current letter button
+const deactivateButton = function(button) {
+  button.removeEventListener('click', spotColorChanger)
 }
 
 // Puts the most recently typed letter into the guess boxes
@@ -97,51 +115,58 @@ const setLetter = function(e) {
   } else if (e.which === 8) {
     if (currentLetter > 0) {currentLetter--;}
     currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
+    letters[currentButton.textContent.toLowerCase()].resetColor(currentLetter);
     currentButton.textContent = '-';
     currentButton.className = 'no-letter';
+    deactivateButton(currentButton);
   } else if (e.which > 64 && e.which < 91) {
     currentButton.textContent = e.key;
-    activateButton(currentButton);
     updateSlotColor(currentButton, currentLetter);
     if (currentLetter < 5) {currentLetter++;}
   } else {return false};
 }
 
-// Display the most recent guess submission in the table
-const displayGuess = function() {
-  document.getElementById(`word-boxes-${currentWord}`).hidden=false;
-  document.getElementById('word-entry').hidden=true;
-  document.getElementById('word-entry').reset();
-  document.getElementById('word-confirm').hidden=false;
-}
-
 // Lines up a new guess
 const newGuess = function() {
+  for (let i=0; i<5; i++) {
+    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
+    deactivateButton(currentButton);
+  }
   currentWord++;
   currentLetter = 0;
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
 }
 
-// Store letter for use in search
-const storeLetter = function(letter, color, position) {
-  if (color === 'green-letter') {
-    knownLetters[position] = letter;
-    if (!goodLetters.includes(letter)) {
-      goodLetters.push(letter);
-    }
-  } else if (color === 'yellow-letter') {
-    if (!goodLetters.includes(letter)) {
-      goodLetters.push(letter);
-    }
-    if (!badPosition[position].includes(letter)) {
-      badPosition[position].push(letter);
-    }
-  } else if (!badLetters.includes(letter)) {
-    if (!knownLetters.includes(letter)) {
-      if (!goodLetters.includes(letter)) {
-        badLetters.push(letter);
+// Update search letters
+const updateSearch = function() {
+  for (let i=0; i<26; i++) {
+    let l = String.fromCharCode(97 + i);
+    let topColor = letters[l].keyboard;
+    if (topColor === 3) {
+      for (let i=0; i < 5; i++) {
+        let color = letters[l].slot[i];
+        if (color === 3) {
+          knownLetters[i] = l;
+          if (!goodLetters.includes(l)) {
+            goodLetters.push(l);
+          }
+        } else {
+          color = 2;
+        }
       }
-    }
+    } else if (topColor === 2) {
+      if (!goodLetters.includes(l)) {
+        goodLetters.push(l);
+      }
+      for (let i=0; i < 5; i++) {
+        letters[l].slot[i] = 2;
+      }
+    } else if (topColor === 1) {
+      badLetters.push(l);
+      for (let i=0; i < 5; i++) {
+        letters[l].slot[i] = 1;
+      }
+    };
   }
 }
 
@@ -157,20 +182,9 @@ const printWords = function() {
   }
 }
 
-// Populate the letters from the most recent guess
-const populateGuess = function() {
-  let wordArray = document.getElementById('word-slot').value.toUpperCase();
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
-    currentButton.textContent = wordArray[i];
-    activateButton(currentButton);
-    setButtonColor(currentButton, i);
-  }
-}
-
 // Search for words that match the given parameters
 const matchWords = function() {
-  let newWords = possibleWords;
+  let newWords = allWords;
   for (let i=0; i < 5; i++) {
     if (knownLetters[i]) {
       newWords = possibleWords.filter(word => 
@@ -203,18 +217,14 @@ const matchWords = function() {
 
 // Handles storing data from colors
 const updateWords = function() {
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
-    storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
-    currentButton.removeEventListener('click', spotColorChanger);
-  }
+  updateSearch();
   matchWords();
   printWords();
-  document.getElementById('reset').hidden = false;
-  newGuess();
 }
 
 // Add event listeners
 window.addEventListener('keydown', setLetter)
-
+document.getElementById('update').addEventListener('click', updateWords);
+document.getElementById('new-word').addEventListener('click', newGuess)
 document.getElementById('reset').addEventListener('click', reset);
+
