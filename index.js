@@ -86,6 +86,16 @@ const updateAllColors = function() {
   }
 }
 
+// Converts white letters to black on update
+const convertToBlack = function() {
+  for (let i=0; i < 5; i++) {
+    let button = document.getElementById(`slot-${currentWord}-${i}`);
+    if (button.className === 'white-letter') {
+      letters[button.textContent.toLowerCase()].changeColor(i);
+    }
+  }
+}
+
 // Add listener for current letter button
 const activateButton = function(button) {
   button.addEventListener('click', spotColorChanger)
@@ -130,6 +140,20 @@ const newGuess = function() {
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
 }
 
+// Stores bad positions from yellow text slots
+const storeYellows = function() {
+  for (let i=0; i<5; i++) {
+    for (let j=0; j<5; j++) {
+      let button = document.getElementById(`slot-${i}-${j}`);
+      if (button.className === 'yellow-letter') {
+        if (!badPosition[j].includes(button.textContent.toLowerCase())) {
+          badPosition[j].push(button.textContent.toLowerCase());
+        }
+      }
+    }
+  }
+}
+
 // Update search letters
 const updateSearch = function() {
   for (let i=0; i<26; i++) {
@@ -164,6 +188,7 @@ const updateSearch = function() {
       }
     };
   }
+  storeYellows();
 }
 
 // Prints words
@@ -181,6 +206,7 @@ const printWords = function() {
 // Search for words that match the given parameters
 const matchWords = function() {
   let newWords = allWords;
+  possibleWords = allWords;
   for (let i=0; i < 5; i++) {
     if (knownLetters[i]) {
       newWords = possibleWords.filter(word => 
@@ -213,6 +239,7 @@ const matchWords = function() {
 
 // Handles storing data from colors
 const updateWords = function() {
+  convertToBlack();
   updateSearch();
   matchWords();
   printWords();
