@@ -9,6 +9,7 @@ let allWords;
 let possibleWords;
 let backspace = true;
 const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
+const keyColorArray = ['white-key', 'black-key', 'yellow-key', 'green-key'];
 
 // Declare classes
 
@@ -20,16 +21,28 @@ class Letter {
     this.keyLock = false;
   }
 
-  changeColor(index) {
+  changeColorBySlot(index) {
     if (this.slot[index] === 3) {this.slot[index]-= 3};
     this.slot[index]++;
     this.storeKeyboardColor();
     updateAllColors();
   }
 
+  changeColorByKey() {
+    if (this.keyboard > 1) {return null};
+    if (this.keyboard === 1) {
+      this.keyboard = 0;
+      this.slot = [0,0,0,0,0];
+    } else {
+      this.keyboard = 1;
+      this.slot = [1,1,1,1,1];
+    };
+    updateKeyboardColor();
+  }
+
   storeKeyboardColor() {
     this.keyboard = Math.max(...this.slot);
-    // updateKeyboardColor();
+    updateKeyboardColor();
   }
 }
 
@@ -57,18 +70,33 @@ const reset = function() {
   window.location.reload();
 }
 
+// Updates the color of the keyboard
+const updateKeyboardColor = function() {
+  for (let i=0; i<26; i++) {
+    let letter = String.fromCharCode(97 + i);
+    let key = document.getElementById(`key-${letter}`);
+    key.className = keyColorArray[letters[letter].keyboard];
+  }
+}
+
 // Handles updating color of buttons on spots
 const spotColorChanger = function(event) {
   let button = event.target;
   let parse = button.id.split('');
   let index = parseInt(parse[parse.length-1]);
-  letters[button.textContent.toLowerCase()].changeColor(index);
+  letters[button.textContent.toLowerCase()].changeColorBySlot(index);
+  backspace = false;
 }
 
 // Updates color of slot button
 const updateSlotColor = function(button, index) {
   color = letters[button.textContent.toLowerCase()].slot[index];
   button.className = colorArray[color];
+  if (color === 0) {
+    activateButton(button);
+  } else if (color === 2) {
+    activateButton(button);
+  }
 }
 
 // Update colors of all elements
@@ -88,7 +116,7 @@ const convertToBlack = function() {
   for (let i=0; i < 5; i++) {
     let button = document.getElementById(`slot-${currentWord}-${i}`);
     if (button.className === 'white-letter') {
-      letters[button.textContent.toLowerCase()].changeColor(i);
+      letters[button.textContent.toLowerCase()].changeColorBySlot(i);
     }
   }
 }
@@ -103,35 +131,15 @@ const deactivateButton = function(button) {
   button.removeEventListener('click', spotColorChanger)
 }
 
+// Throws an error if the user tries to submit an incomplete word
 const incompleteWordError = function() {
   window.alert('You have not entered a complete word!');
-}
-
-const submitLetters = function() {
-  backspace = false;
-  for (let i=0; i<5; i++) {
-    let button = document.getElementById(`slot-${currentWord}-${i}`)
-    let color = colorArray.indexOf(button.className)
-    if (color === 0) {
-      activateButton(button);
-    } else if (color === 2) {
-      activateButton(button);
-    }
-  }
-  convertToBlack();
 }
 
 // Puts the most recently typed letter into the guess boxes
 const setLetter = function(e) {
   let currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-  if (e.which === 13) {
-    if (currentLetter < 5) {
-      incompleteWordError();
-      return false;
-    } else {
-      submitLetters();
-    }
-  } else if (e.which === 8 && backspace === true) {
+  if (e.which === 8 && backspace === true) {
     if (currentLetter > 0) {currentLetter--;}
     currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
     currentButton.textContent = '-';
