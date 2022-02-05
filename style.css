@@ -2,31 +2,6 @@ body * {
   font-family: Helvetica Neue, Arial, sans-serif;
 }
 
-
-.enter-letter {
-  width: 20px;
-  background-color: white;
-  color: black;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.yellow-letters {
-  width: 100px;
-  background-color: yellow;
-  color: black;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.black-letters {
-  width: 100px;
-  background-color: black;
-  color: white;
-  text-align: left;
-  text-transform: uppercase;
-}
-
 .yellow-letter {
   width: 50px;
   height: 50px;
@@ -34,6 +9,7 @@ body * {
   background-color: goldenrod;
   color: white;
   text-shadow: black;
+  text-transform: uppercase;
 }
 
 .green-letter {
@@ -43,6 +19,7 @@ body * {
   background-color: forestgreen;
   color: white;
   text-shadow: black;
+  text-transform: uppercase;
 }
 
 .black-letter {
@@ -52,13 +29,24 @@ body * {
   background-color: black;
   color: white;
   text-shadow: black;
+  text-transform: uppercase;
 }
 
-.neutral-letter {
+.white-letter {
   width: 50px;
   height: 50px;
   font-size: 26pt;
-  background-color: gray;
-  color: gray;
-  text-shadow: gray;
+  background-color: lightgrey;
+  color: black;
+  text-shadow: black;
+  text-transform: uppercase;
+}
+
+.no-letter {
+  width: 50px;
+  height: 50px;
+  font-size: 26pt;
+  background-color: lightgrey;
+  color: lightgrey;
+  text-transform: uppercase;
 }

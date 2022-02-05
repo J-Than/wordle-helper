@@ -7,33 +7,27 @@ let currentWord = 0;
 let currentLetter = 0;
 let allWords;
 let possibleWords;
+const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
 
 // Declare classes
 class Letter {
-  constructor(keyboard, slot) {
-    this.keyboard = keyboard;
-    this.slot = slot;
+  constructor(letter) {
+    this.letter = letter;
+    this.keyboard = 0;
+    this.slot = [0,0,0,0,0];
+    this.keyLock = false;
   }
 
   changeColor(index) {
     if (this.slot[index] === 3) {this.slot[index]-= 4};
     this.slot[index]++;
     this.storeKeyboardColor();
+    updateAllColors();
   }
 
   storeKeyboardColor() {
     this.keyboard = Math.max(...this.slot);
-    this.updateKeyboardColor();
-  }
-
-  updateKeyboardColor() {
-
-  }
-
-  updatePosition() {
-    if (this.color === 'w') {
-      this.yellowPosition
-    }
+    // updateKeyboardColor();
   }
 }
 
@@ -41,15 +35,8 @@ class Letter {
 const letters = {}
 for (let i=0; i<26; i++) {
   let letter = String.fromCharCode(97 + i);
-  letters[letter] = new Letter(0, [0,0,0,0,0]);
+  letters[letter] = new Letter(letter);
 }
-
-console.log(letters);
-console.log(letters.a.value);
-letters.a.changeColor(2);
-letters.a.changeColor(1);
-letters.a.changeColor(2);
-console.log(letters.a);
 
 // Pull in word list
 fetch ('answerlist.json')
@@ -68,53 +55,38 @@ const reset = function() {
   window.location.reload();
 }
 
-// Confirm submission of a new word
-const confirmSubmit = function() {
-  if (window.confirm('Are you sure? You can set the colors of each letter by clicking on them.')) {confirmColors();};
-}
-
-// Throw error for incomplete word
-const incompleteWordError = function() {
-  window.alert('You have not filled out all of the letters.');
-}
-
-// Handles updating color of buttons on current guess
-const colorChanger = function(event) {
+// Handles updating color of buttons on spots
+const spotColorChanger = function(event) {
   let button = event.target;
-  if (button.className === 'yellow-letter') {
-    button.className = 'green-letter';
-  } else if (button.className === 'black-letter') {
-    button.className = 'yellow-letter';
-  } else {
-    button.className = 'black-letter';
+  let parse = button.id.split('');
+  let index = parseInt(parse[parse.length-1]);
+  letters[button.textContent.toLowerCase()].changeColor(index);
+}
+
+// Updates color of slot button
+const updateSlotColor = function(button, index) {
+  button.className = colorArray[letters[button.textContent.toLowerCase()].slot[index]];
+}
+
+// Update colors of all elements
+const updateAllColors = function() {
+  for (let i=0; i<5; i++) {
+    for (let j=0; j<5; j++) {
+      let button = document.getElementById(`slot-${i}-${j}`);
+      if (button.textContent !== '-') {
+        button.className = colorArray[letters[button.textContent.toLowerCase()].slot[j]];
+      }
+    }
   }
 }
-
 // Add listener for current letter button
 const activateButton = function(button) {
-  button.addEventListener('click', colorChanger)
-}
-
-// Sets button color based on prior guesses
-const setButtonColor = function(button, index) {
-  if (button.textContent.toLowerCase() === knownLetters[index]) {
-    button.className = 'green-letter';
-    button.removeEventListener('click', colorChanger);
-  } else if (goodLetters.includes(button.textContent.toLowerCase())) {
-    button.className = 'yellow-letter';
-  } else if (badLetters.includes(button.textContent.toLowerCase())) {
-    button.className = 'black-letter';
-    button.removeEventListener('click', colorChanger);
-  } else if (button.textContent === '-') {
-    button.className = 'neutral-letter';
-  } else {
-    button.className = 'black-letter';
-  }
+  button.addEventListener('click', spotColorChanger)
 }
 
 // Puts the most recently typed letter into the guess boxes
 const setLetter = function(e) {
-  let currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
+  let currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
   if (e.which === 13) {
     if (currentLetter < 5) {
       incompleteWordError();
@@ -124,13 +96,13 @@ const setLetter = function(e) {
     }
   } else if (e.which === 8) {
     if (currentLetter > 0) {currentLetter--;}
-    currentButton = document.getElementById(`guess-${currentWord}-${currentLetter}`);
+    currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
     currentButton.textContent = '-';
-    setButtonColor(currentButton, currentLetter);
+    currentButton.className = 'no-letter';
   } else if (e.which > 64 && e.which < 91) {
-    currentButton.textContent = e.key.toUpperCase();
+    currentButton.textContent = e.key;
     activateButton(currentButton);
-    setButtonColor(currentButton, currentLetter);
+    updateSlotColor(currentButton, currentLetter);
     if (currentLetter < 5) {currentLetter++;}
   } else {return false};
 }
@@ -187,9 +159,9 @@ const printWords = function() {
 
 // Populate the letters from the most recent guess
 const populateGuess = function() {
-  let wordArray = document.getElementById('word-guess').value.toUpperCase();
+  let wordArray = document.getElementById('word-slot').value.toUpperCase();
   for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
     currentButton.textContent = wordArray[i];
     activateButton(currentButton);
     setButtonColor(currentButton, i);
@@ -230,11 +202,11 @@ const matchWords = function() {
 }
 
 // Handles storing data from colors
-const confirmColors = function() {
+const updateWords = function() {
   for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`guess-${currentWord}-${i}`);
+    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
     storeLetter(currentButton.textContent.toLowerCase(), currentButton.className, i);
-    currentButton.removeEventListener('click', colorChanger);
+    currentButton.removeEventListener('click', spotColorChanger);
   }
   matchWords();
   printWords();
