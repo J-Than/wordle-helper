@@ -8,6 +8,49 @@ let currentLetter = 0;
 let allWords;
 let possibleWords;
 
+// Declare classes
+class Letter {
+  constructor(keyboard, slot) {
+    this.keyboard = keyboard;
+    this.slot = slot;
+  }
+
+  changeColor(index) {
+    if (this.slot[index] === 3) {this.slot[index]-= 4};
+    this.slot[index]++;
+    this.storeKeyboardColor();
+  }
+
+  storeKeyboardColor() {
+    this.keyboard = Math.max(...this.slot);
+    this.updateKeyboardColor();
+  }
+
+  updateKeyboardColor() {
+
+  }
+
+  updatePosition() {
+    if (this.color === 'w') {
+      this.yellowPosition
+    }
+  }
+}
+
+// Build objects
+const letters = {}
+for (let i=0; i<26; i++) {
+  let letter = String.fromCharCode(97 + i);
+  letters[letter] = new Letter(0, [0,0,0,0,0]);
+}
+
+console.log(letters);
+console.log(letters.a.value);
+letters.a.changeColor(2);
+letters.a.changeColor(1);
+letters.a.changeColor(2);
+console.log(letters.a);
+
 // Pull in word list
 fetch ('answerlist.json')
 .then (r => r.json())
