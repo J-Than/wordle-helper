@@ -65,7 +65,7 @@ const spotColorChanger = function(event) {
 
 // Updates color of slot button
 const updateSlotColor = function(button, index) {
-  color = letters[button.textContent.toLowerCase()].slot[index]
+  color = letters[button.textContent.toLowerCase()].slot[index];
   button.className = colorArray[color];
   if (color === 0) {
     activateButton(button);
@@ -136,28 +136,31 @@ const updateSearch = function() {
     let l = String.fromCharCode(97 + i);
     let topColor = letters[l].keyboard;
     if (topColor === 3) {
-      for (let i=0; i < 5; i++) {
-        let color = letters[l].slot[i];
+      for (let j=0; j < 5; j++) {
+        let color = letters[l].slot[j];
         if (color === 3) {
-          knownLetters[i] = l;
+          knownLetters[j] = l;
           if (!goodLetters.includes(l)) {
             goodLetters.push(l);
           }
         } else {
           color = 2;
+          letters[l].slot[j] = 2;
         }
       }
     } else if (topColor === 2) {
       if (!goodLetters.includes(l)) {
         goodLetters.push(l);
       }
-      for (let i=0; i < 5; i++) {
-        letters[l].slot[i] = 2;
+      for (let j=0; j < 5; j++) {
+        letters[l].slot[j] = 2;
       }
     } else if (topColor === 1) {
-      badLetters.push(l);
-      for (let i=0; i < 5; i++) {
-        letters[l].slot[i] = 1;
+      if (!badLetters.includes(l)) {
+        badLetters.push(l);
+      }
+      for (let j=0; j < 5; j++) {
+        letters[l].slot[j] = 1;
       }
     };
   }
