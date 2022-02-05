@@ -2,14 +2,83 @@
 let knownLetters = ['','','','',''];
 let goodLetters = [];
 let badLetters = [];
+let maybeLetters = [];
+let twoLetters = [];
+let threeLetters = [];
 let badPosition = [[],[],[],[],[]];
 let currentWord = 0;
 let currentLetter = 0;
 let allWords;
 let possibleWords;
-const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
+const colorArray = ['neutral-letter', 'white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
 
 // Declare classes
+class Word {
+  constructor(row) {
+    this.button = [
+      document.getElementById(`slot-${row}-0`),
+      document.getElementById(`slot-${row}-1`),
+      document.getElementById(`slot-${row}-2`),
+      document.getElementById(`slot-${row}-3`),
+      document.getElementById(`slot-${row}-4`)];
+    this.color = [0,0,0,0,0];
+    this.letter = ['-','-','-','-','-']
+    this.row = row;
+    this.word = '-----'
+  }
+
+  updateLetter(index, letter) {
+    this.slot[index].letter = letter;
+    this.checkLetter(index, letter);
+  }
+
+  checkLetter(index, letter) {
+    if (knownLetters[index] === letter
+    let colorSlots = [];
+    word0.checkColor(letter);
+    if (this.row > 0) {
+      word1.checkColor(letter)
+    }
+    if (this.row > 1) {
+      word2.checkColor(letter)
+    }
+    if (this.row > 2) {
+      word3.checkColor(letter)
+    }
+    if (this.row > 3) {
+      word4.checkColor(letter)
+    }
+  }
+
+  checkColor(letter) {
+    if (this.letter.includes(letter)) {
+      let color0 = this.color[this.letter.indexOf(letter)];
+      if (this.letter.filter(n => n === letter).length > 1)
+    }
+  }
+
+  setColor(index, color) {
+    this.color[index] = color;
+  }
+
+  update() {
+    this.word = ''.concat('',
+      this.button[0].textContent.toLowerCase()).concat('',
+      this.button[1].textContent.toLowerCase()).concat('',
+      this.button[2].textContent.toLowerCase()).concat('',
+      this.button[3].textContent.toLowerCase()).concat('',
+      this.button[4].textContent.toLowerCase());
+    this.color = [
+      colorArray.findIndex((e) => e === this.button[0].className),
+      colorArray.findIndex((e) => e === this.button[1].className),
+      colorArray.findIndex((e) => e === this.button[2].className),
+      colorArray.findIndex((e) => e === this.button[3].className),
+      colorArray.findIndex((e) => e === this.button[4].className),
+    ];
+    this.letter = this.word.split('');
+  }
+}
+
 class Letter {
   constructor(letter) {
     this.letter = letter;
@@ -38,6 +107,13 @@ for (let i=0; i<26; i++) {
   letters[letter] = new Letter(letter);
 }
 
+row0 = new Word(0);
+row1 = new Word(1);
+row2 = new Word(2);
+row3 = new Word(3);
+row4 = new Word(4);
+const grid = [row0, row1, row2, row3, row4];
+
 // Pull in word list
 fetch ('answerlist.json')
 .then (r => r.json())
@@ -52,7 +128,12 @@ fetch ('answerlist.json')
 
 // Resets the page
 const reset = function() {
-  window.location.reload();
+  // window.location.reload();
+  word0 = new Word(0);
+  console.log(word0.word);
+  console.log(word0.button);
+  console.log(word0.color);
+  console.log(word0.letter);
 }
 
 // Handles updating color of buttons on spots
@@ -131,13 +212,18 @@ const setLetter = function(e) {
 
 // Lines up a new guess
 const newGuess = function() {
-  for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
-    deactivateButton(currentButton);
-  }
-  currentWord++;
-  currentLetter = 0;
-  document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+  word0.update();
+  console.log(word0.word);
+  console.log(word0.button);
+  console.log(word0.color);
+  console.log(word0.letter);
+  // for (let i=0; i<5; i++) {
+  //   const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
+  //   deactivateButton(currentButton);
+  // }
+  // currentWord++;
+  // currentLetter = 0;
+  // document.getElementById(`word-boxes-${currentWord}`).hidden=false;
 }
 
 // Stores bad positions from yellow text slots
@@ -148,6 +234,101 @@ const storeYellows = function() {
       if (button.className === 'yellow-letter') {
         if (!badPosition[j].includes(button.textContent.toLowerCase())) {
           badPosition[j].push(button.textContent.toLowerCase());
+        }
+      }
+    }
+  }
+}
+
+// Clears out master data for a fresh update
+const clearMaster = function() {
+  knownLetters = ['','','','',''];
+  goodLetters = [];
+  badLetters = [];
+  maybeLetters = [];
+  twoLetters = [];
+  threeLetters = [];
+  badPosition = [[],[],[],[],[]];
+}
+
+// Newer update master letters set
+const updateMaster = function() {
+  clearMaster();
+  for (let i=0; i<currentWord+1; i++) {
+    let currentRow = grid[i];
+    for (let j=0; j<5; j++) {
+      let color = currentRow.color[j];
+      let letter = currentRow.letter[j];
+      if (color === 4 && knownLetters[j] === '') {
+        knownLetters[j] = letter
+      }
+    }
+  }
+}
+
+
+// Updates the master letters set
+const updateMasterOld = function() {
+  clearMaster();
+  for (let i=0; i<currentWord+1; i++) {
+    for (let k=0; k<2; k++) {
+      for (let j=0; j<5; j++) {
+        let color = grid[i].color[j];
+        let letter = grid[i].letter[j];
+        if (color === 4 && knownLetters[j] === '') {
+          knownLetters[j] = letter
+        }
+        if (color === 3) {
+          if (letter === knownLetters[j]) {
+            grid[i].setColor(j, 4);
+            if (badPosition[j].includes(letter)) {
+              badPosition[j].splice(badPosition[j].indexOf(letter), 1);
+            }
+          } else if (!badPosition[j].includes(letter)) {
+            badPosition[j].push(letter);
+          }
+          if (knownLetters.includes(letter) && letter !== knownLetters[j]) {
+            if (!duplicateLetters.includes(letter)) {
+              duplicateLetters.push(letter);
+            }
+            if (goodLetters.includes(letter)) {
+              goodLetters.splice(goodLetters.indexOf(letter), 1);
+            }
+          } else if (!goodLetters.includes(letter)) {
+            goodLetters.push(letter);
+          }
+        }
+        if (color === 2) {
+          if (letter === knownLetters[j]) {
+            grid[i].setColor(j, 4);
+            if (badPosition[j].includes(letter)) {
+              badPosition[j].splice(badPosition[j].indexOf(letter), 1);
+            }
+          } else if (!badLetters.includes(letter)) {
+            badLetters.push(letter);
+          }
+          if (knownLetters.includes(letter) && letter !== knownLetters[j]) {
+            if (duplicateLetters.includes(letter)) {
+              grid[i].setColor(j, 3);
+              goodLetters.splice(goodLetters.indexOf(letter), 1);
+            }
+            else if (goodLetters.includes(letter)) {
+              duplicateLetters.push(letter);
+            }
+            if (goodLetters.includes(letter)) {
+              goodLetters.splice(goodLetters.indexOf(letter), 1);
+            }
+          } else if (!goodLetters.includes(letter)) {
+            goodLetters.push(letter);
+          }
+          if (!badLetters.includes(letter)) {
+            badLetters.push(letter);
+          }
+        }
+        if (color === 1) {
+          if (!maybeLetters.includes(letter)) {
+            maybeLetters.push(letter);
+          }
         }
       }
     }
