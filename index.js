@@ -8,28 +8,35 @@ let currentLetter = 0;
 let allWords;
 let possibleWords;
 let backspace = true;
-const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
-const keyColorArray = ['white-key', 'black-key', 'yellow-key', 'green-key'];
+const colorArray = ['black-letter', 'white-letter', 'yellow-letter', 'green-letter'];
+const keyColorArray = ['black-key', 'white-key', 'yellow-key', 'green-key'];
 
 // Declare classes
 
 class Letter {
   constructor(letter) {
     this.letter = letter;
-    this.keyboard = 0;
-    this.slot = [0,0,0,0,0];
+    this.keyboard = 1;
+    this.slot = [1,1,1,1,1];
+    this.base = 1;
     this.keyLock = false;
   }
 
   changeColorBySlot(index) {
-    if (this.slot[index] === 3) {this.slot[index]-= 3};
-    this.slot[index]++;
-    this.storeKeyboardColor();
+    let current = this.slot[index];
+    if (current === 3) {current-= 4};
+    current++;
+    if (current === 3) {
+      this.badSlot[index] = 0;
+    } else if (current === 2) {
+      this.badSlot[index] = 1;
+    }
+    this.storeKeyboard();
     updateAllColors();
   }
 
   changeColorByKey() {
-    if (this.keyboard > 1) {return null};
+    if (this.keyboard > 1) {return false};
     if (this.keyboard === 1) {
       this.keyboard = 0;
       this.slot = [0,0,0,0,0];
@@ -37,12 +44,11 @@ class Letter {
       this.keyboard = 1;
       this.slot = [1,1,1,1,1];
     };
-    updateKeyboardColor();
+    updateAllColors();
   }
 
-  storeKeyboardColor() {
+  storeKeyboard() {
     this.keyboard = Math.max(...this.slot);
-    updateKeyboardColor();
   }
 }
 
@@ -70,6 +76,16 @@ const reset = function() {
   window.location.reload();
 }
 
+// Add listener for current letter button
+const activateButton = function(button) {
+  button.addEventListener('click', slotClick)
+}
+
+// Remove listener for current letter button
+const deactivateButton = function(button) {
+  button.removeEventListener('click', slotClick)
+}
+
 // Updates the color of the keyboard
 const updateKeyboardColor = function() {
   for (let i=0; i<26; i++) {
@@ -79,28 +95,34 @@ const updateKeyboardColor = function() {
   }
 }
 
-// Handles updating color of buttons on spots
-const spotColorChanger = function(event) {
+// Handles click for slots
+const slotClick = function(event) {
   let button = event.target;
   let parse = button.id.split('');
   let index = parseInt(parse[parse.length-1]);
   letters[button.textContent.toLowerCase()].changeColorBySlot(index);
   backspace = false;
+  console.log(letters[button.textContent.toLowerCase()])
+}
+
+// Handles click for keyboard
+const keyClick = function(event) {
+  let key = event.target;
+  let letter = key.textContent.toLowerCase();
+  letters[letter].changeColorByKey();
 }
 
 // Updates color of slot button
 const updateSlotColor = function(button, index) {
   color = letters[button.textContent.toLowerCase()].slot[index];
   button.className = colorArray[color];
-  if (color === 0) {
-    activateButton(button);
-  } else if (color === 2) {
+  if (color === 1 || color === 2) {
     activateButton(button);
   }
 }
 
-// Update colors of all elements
-const updateAllColors = function() {
+// Update slot colors
+const updateBoxColors = function() {
   for (let i=0; i<5; i++) {
     for (let j=0; j<5; j++) {
       let button = document.getElementById(`slot-${i}-${j}`);
@@ -111,6 +133,12 @@ const updateAllColors = function() {
   }
 }
 
+// Update colors of all elements
+const updateAllColors = function() {
+  updateBoxColors();
+  updateKeyboardColor();
+}
+
 // Converts white letters to black on update
 const convertToBlack = function() {
   for (let i=0; i < 5; i++) {
@@ -119,16 +147,6 @@ const convertToBlack = function() {
       letters[button.textContent.toLowerCase()].changeColorBySlot(i);
     }
   }
-}
-
-// Add listener for current letter button
-const activateButton = function(button) {
-  button.addEventListener('click', spotColorChanger)
-}
-
-// Remove listener for current letter button
-const deactivateButton = function(button) {
-  button.removeEventListener('click', spotColorChanger)
 }
 
 // Throws an error if the user tries to submit an incomplete word
