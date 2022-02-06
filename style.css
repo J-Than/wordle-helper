@@ -2,7 +2,7 @@ body * {
   font-family: Helvetica Neue, Arial, sans-serif;
 }
 
-p + p, li + li, div + div { 
+div + div { 
   margin-top: 4px;
 }
 

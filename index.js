@@ -1,6 +1,6 @@
 // Declare universal constants
 const letters = {}
-const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
+const slotColorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
 const keyColorArray = ['white-key', 'black-key', 'yellow-key', 'green-key'];
 
 // Declare universal variables
@@ -12,7 +12,8 @@ let currentWord = 0;
 let currentLetter = 0;
 let allWords;
 let possibleWords;
-let backspace = true;
+let rowLock = false;
+let typeActive = true;
 
 // Declare classes
 class Letter {
@@ -48,9 +49,14 @@ class Letter {
   }
 
   changeColorByKey() {
-    if (this.keyboard > 1) {return false};
-    if (this.keyboard === 1) {
+    if (this.keyboard === 3) {
+      return false
+    } else if (this.keyboard === 2) {
       this.clearData();
+    } else if (this.keyboard === 1) {
+      this.keyboard = 2;
+      this.slot = [2,2,2,2,2];
+      this.base = 2;
     } else {
       this.keyboard = 1;
       this.slot = [1,1,1,1,1];
@@ -99,7 +105,7 @@ const slots = function(pass, bool, check) {
 const row = function(pass, thru) {
   for (let i=0; i<5; i++) {
     let button = document.getElementById(`slot-${currentWord}-${i}`);
-    pass(button, thru, i);
+    pass(button, thru);
   }
 }
 
@@ -138,26 +144,29 @@ const checkLetter = function(button, letter) {
 // Update slot colors
 const updateSlotColor = function(button, j) {
   if (button.textContent !== '-') {
-    button.className = colorArray[letters[button.textContent.toLowerCase()].slot[j]];
+    button.className = slotColorArray[letters[button.textContent.toLowerCase()].slot[j]];
   }
 }
 
 // Updates keyboard activation based on rules
-const updateKeyActivation = function(letter, key) {
-  if (letters[letter].keyboard < 2) {
-    if (!slots(checkLetter, true, letter)) {
-      activate(key, keyClick);
-    } else {
-      deactivate(key, keyClick);
-    }
-  } else {
-    deactivate(key, keyClick);
-  }
+const lockKey = function(button) {
+  let letter = button .textContent.toLowerCase();
+  letters[letter].lockLetter();
+  deactivate(document.getElementById(`key-${letter}`), keyClick);
 }
 
 // Updates the color of the keyboard
 const updateKeyColor = function(letter, key) {
   key.className = keyColorArray[letters[letter].keyboard];
+}
+
+// Updates the locks on the keyboard
+const updateKeyLock = function(letter, key) {
+  if (letters[letter].locked) {
+    deactivate(key, keyClick);
+  } else {
+    activate(key, keyClick);
+  }
 }
 
 // Update colors of all elements
@@ -178,12 +187,12 @@ const slotClick = function(e) {
   let button = e.target;
   let parse = button.id.split('');
   let index = parseInt(parse[parse.length-1]);
-  if (backspace = true) {
+  if (rowLock === false) {
     row(convertToBlack);
+    row(lockKey);
+    rowLock = true;
   }
   letters[button.textContent.toLowerCase()].changeColorBySlot(index);
-  backspace = false;
-  keys(updateKeyActivation);
 }
 
 // Handles click for keyboard
@@ -193,10 +202,10 @@ const keyClick = function(e) {
   letters[letter].changeColorByKey();
 }
 
-// Gives the slot button its initial color
-const initialColor = function(button, index) {
+// Gives the slot button its initial values
+const initializeSlot = function(button, index) {
   color = letters[button.textContent.toLowerCase()].slot[index];
-  button.className = colorArray[color];
+  button.className = slotColorArray[color];
   if (color === 0 || color === 2) {
     activate(button, slotClick);
   }
@@ -205,29 +214,27 @@ const initialColor = function(button, index) {
 // Puts the most recently typed letter into the guess boxes
 const captureLetters = function(e) {
   let button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-  if (e.which === 8 && backspace === true) {
-    if (currentLetter > 0) {currentLetter--;}
-    button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-    button.textContent = '-';
-    button.className = 'no-letter';
-  } else if (e.which > 64 && e.which < 91) {
-    button.textContent = e.key;
-    initialColor(button, currentLetter);
-    if (currentLetter < 5) {currentLetter++;}
-  } else {return false};
-}
-
-// Swaps the submit word and add word buttons based on which applies
-const switchButtons = function () {
-  document.getElementById('add-word').hidden = !document.getElementById('add-word').hidden;
-  document.getElementById('submit-word').hidden = !document.getElementById('submit-word').hidden;
-}
-
-// Toggles keyboard visibility
-const toggleKeyboard = function (e) {
-  let keysOn = document.getElementById('keyboard');
-  keysOn.hidden = !keysOn.hidden; 
-  e.target.textContent = `${keysOn.hidden ? 'Show' : 'Hide'} Keyboard Interface`;
+  if (e.which === 13) {
+    submitWord();
+  }
+  if (typeActive === true) {
+    if (e.which === 8) {
+      if (currentLetter > 0) {currentLetter--;}
+      button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
+      button.textContent = '-';
+      button.className = 'no-letter';
+    } else if (e.which > 64 && e.which < 91) {
+      button.textContent = e.key;
+      initializeSlot(button, currentLetter);
+      if (currentLetter < 5) {currentLetter++;}
+    } else {return false};
+  } else {
+    if (e.which > 64 && e.which < 91) {
+      if (letters[e.key].locked === false) {
+        letters[e.key].changeColorByKey();
+      }
+    }
+  }
 }
 
 // Saves previous word and adds a new word
@@ -236,8 +243,8 @@ const addWord = function() {
   currentWord++;
   currentLetter = 0;
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
-  backspace = true;
-  switchButtons();
+  rowLock = false;
+  typeActive = false;
 }
 
 // Stores bad positions from yellow text slots
@@ -280,7 +287,7 @@ const updateSearch = function(letter) {
       badLetters.push(letter);
     }
     for (let i=0; i < 5; i++) {
-      letters[l].slot[i] = 1;
+      letters[letter].slot[i] = 1;
     }
   };
   slots(storeYellows);
@@ -339,17 +346,12 @@ const submitWord = function(e) {
   keys(updateSearch);
   matchWords();
   printWords();
-  keys(updateKeyActivation);
-  if (e.target.id === 'submit-word') {
-    switchButtons();
-    row(deactivate, slotClick);
-  };
+  typeActive = false;
 }
 
 // Add event listeners
+keys(updateKeyLock);
 window.addEventListener('keydown', captureLetters);
-document.getElementById('submit-word').addEventListener('click', submitWord);
 document.getElementById('add-word').addEventListener('click', addWord);
-document.getElementById('keyboard-toggle').addEventListener('click', toggleKeyboard);
 document.getElementById('submit-keys').addEventListener('click', submitWord);
 document.getElementById('reset').addEventListener('click', reset);
