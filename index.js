@@ -12,7 +12,6 @@ let currentWord = 0;
 let currentLetter = 0;
 let allWords;
 let possibleWords;
-let rowLock = false;
 let typeActive = true;
 
 // Declare classes
@@ -50,9 +49,14 @@ class Letter {
 
   changeColorByKey() {
     if (this.keyboard === 3) {
-      return false
-    } else if (this.keyboard === 2) {
       this.clearData();
+    } else if (this.keyboard === 2) {
+      if (row(checkLetter, 0, this.letter) === undefined) {
+        this.clearData();
+      } else {
+        this.keyboard = 3;
+        this.slot[row(checkLetter, 0, this.letter)] = 3;
+      }
     } else if (this.keyboard === 1) {
       this.keyboard = 2;
       this.slot = [2,2,2,2,2];
@@ -87,24 +91,24 @@ fetch ('answerlist.json')
 })
 
 // Iterates a function over the entire word grid
-const slots = function(pass, bool, check) {
+const slots = function(pass) {
   for (let i=0; i<=currentWord; i++) {
     for (let j=0; j<5; j++) {
       let button = document.getElementById(`slot-${i}-${j}`);
-      if (bool) {
-        if (pass(button, check) === true) {
-          return true;
-        }
-      };
       pass(button, j);
     }
   }
 }
 
 // Iterates a function over the current word row
-const row = function(pass, thru) {
+const row = function(pass, thru, check) {
   for (let i=0; i<5; i++) {
     let button = document.getElementById(`slot-${currentWord}-${i}`);
+    if (check) {
+      if (pass(button, check) === true) {
+        return i;
+      }
+    };
     pass(button, thru);
   }
 }
@@ -136,7 +140,7 @@ const deactivate = function(button, func) {
   button.removeEventListener('click', func)
 }
 
-// Checks slots for a particular letter
+// Checks slot for a particular letter
 const checkLetter = function(button, letter) {
   return button.textContent.toLowerCase() === letter;
 }
@@ -187,12 +191,9 @@ const slotClick = function(e) {
   let button = e.target;
   let parse = button.id.split('');
   let index = parseInt(parse[parse.length-1]);
-  if (rowLock === false) {
-    row(convertToBlack);
-    row(lockKey);
-    rowLock = true;
-  }
+  row(convertToBlack);
   letters[button.textContent.toLowerCase()].changeColorBySlot(index);
+  document.activeElement.blur();
 }
 
 // Handles click for keyboard
@@ -200,6 +201,7 @@ const keyClick = function(e) {
   let key = e.target;
   let letter = key.textContent.toLowerCase();
   letters[letter].changeColorByKey();
+  document.activeElement.blur();
 }
 
 // Gives the slot button its initial values
@@ -239,12 +241,13 @@ const captureLetters = function(e) {
 
 // Saves previous word and adds a new word
 const addWord = function() {
+  row(lockKey);
   row(deactivate, slotClick);
   currentWord++;
   currentLetter = 0;
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
-  rowLock = false;
-  typeActive = false;
+  typeActive = true;
+  document.activeElement.blur();
 }
 
 // Stores bad positions from yellow text slots
@@ -336,6 +339,7 @@ const printWords = function() {
     let newLi = document.createElement('li');
     newLi.textContent = word;
     ul.appendChild(newLi);
+    document.activeElement.blur();
   }
 }
 

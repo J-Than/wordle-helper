@@ -35,16 +35,15 @@ div + div {
 }
 
 .black-letter, .black-key {
-  background-color: #444;
+  background-color: gray;
 }
 
 .white-letter, .white-key {
-  background-color: lightgrey;
+  background-color: white;
   color: black;
 }
 
 .no-letter {
-  background-color: lightgrey;
-  color: lightgrey;
-  text-shadow: lightgrey;
+  background-color: white;
+  color: white;
 }
