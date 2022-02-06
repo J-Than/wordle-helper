@@ -8,31 +8,44 @@ let currentLetter = 0;
 let allWords;
 let possibleWords;
 let backspace = true;
-const colorArray = ['black-letter', 'white-letter', 'yellow-letter', 'green-letter'];
-const keyColorArray = ['black-key', 'white-key', 'yellow-key', 'green-key'];
+const colorArray = ['white-letter', 'black-letter', 'yellow-letter', 'green-letter'];
+const keyColorArray = ['white-key', 'black-key', 'yellow-key', 'green-key'];
 
 // Declare classes
 
 class Letter {
   constructor(letter) {
     this.letter = letter;
-    this.keyboard = 1;
-    this.slot = [1,1,1,1,1];
-    this.base = 1;
-    this.keyLock = false;
+    this.keyboard = 0;
+    this.slot = [0,0,0,0,0];
+    this.base = 0;
   }
 
   changeColorBySlot(index) {
-    let current = this.slot[index];
-    if (current === 3) {current-= 4};
-    current++;
-    if (current === 3) {
-      this.badSlot[index] = 0;
-    } else if (current === 2) {
-      this.badSlot[index] = 1;
+    if (this.slot[index] === 3) {this.slot[index]-= 3};
+    this.slot[index]++;
+    if (this.slot[index] > 1) {
+      this.base = 2;
+    } else {
+      if (Math.max(...this.slot) > 1) {
+        this.base = 2;
+      } else {
+        this.base = 1;
+        this.slot = [1,1,1,1,1];
+      }
     }
     this.storeKeyboard();
     updateAllColors();
+  }
+
+  setData(keyboard, base, slot, index) {
+
+  }
+
+  clearData() {
+    this.keyboard = 0;
+    this.slot = [0,0,0,0,0];
+    this.base = 0;
   }
 
   changeColorByKey() {
@@ -71,6 +84,19 @@ fetch ('answerlist.json')
   possibleWords = wordArray;
 })
 
+// Tests for duplicates in an array
+const duplicateFinder = function(array) {
+  const uniqueElements = new Set(array);
+  const filteredElements = array.filter(item => {
+      if (uniqueElements.has(item)) {
+          uniqueElements.delete(item);
+      } else {
+          return item;
+      }
+  });
+  return [...new Set(filteredElements)]
+}
+
 // Resets the page
 const reset = function() {
   window.location.reload();
@@ -100,9 +126,11 @@ const slotClick = function(event) {
   let button = event.target;
   let parse = button.id.split('');
   let index = parseInt(parse[parse.length-1]);
+  if (backspace = true) {
+    convertToBlack();
+  }
   letters[button.textContent.toLowerCase()].changeColorBySlot(index);
   backspace = false;
-  console.log(letters[button.textContent.toLowerCase()])
 }
 
 // Handles click for keyboard
@@ -112,17 +140,17 @@ const keyClick = function(event) {
   letters[letter].changeColorByKey();
 }
 
-// Updates color of slot button
-const updateSlotColor = function(button, index) {
+// Gives the slot button its initial color
+const initialColor = function(button, index) {
   color = letters[button.textContent.toLowerCase()].slot[index];
   button.className = colorArray[color];
-  if (color === 1 || color === 2) {
+  if (color === 0 || color === 2) {
     activateButton(button);
   }
 }
 
 // Update slot colors
-const updateBoxColors = function() {
+const updateSlotColors = function() {
   for (let i=0; i<5; i++) {
     for (let j=0; j<5; j++) {
       let button = document.getElementById(`slot-${i}-${j}`);
@@ -135,7 +163,7 @@ const updateBoxColors = function() {
 
 // Update colors of all elements
 const updateAllColors = function() {
-  updateBoxColors();
+  updateSlotColors();
   updateKeyboardColor();
 }
 
@@ -149,31 +177,26 @@ const convertToBlack = function() {
   }
 }
 
-// Throws an error if the user tries to submit an incomplete word
-const incompleteWordError = function() {
-  window.alert('You have not entered a complete word!');
-}
-
 // Puts the most recently typed letter into the guess boxes
-const setLetter = function(e) {
-  let currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
+const captureLetters = function(e) {
+  let button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
   if (e.which === 8 && backspace === true) {
     if (currentLetter > 0) {currentLetter--;}
-    currentButton = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-    currentButton.textContent = '-';
-    currentButton.className = 'no-letter';
+    button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
+    button.textContent = '-';
+    button.className = 'no-letter';
   } else if (e.which > 64 && e.which < 91) {
-    currentButton.textContent = e.key;
-    updateSlotColor(currentButton, currentLetter);
+    button.textContent = e.key;
+    initialColor(button, currentLetter);
     if (currentLetter < 5) {currentLetter++;}
   } else {return false};
 }
 
-// Lines up a new guess
-const newGuess = function() {
+// Saves previous word and adds a new word
+const addWord = function() {
   for (let i=0; i<5; i++) {
-    const currentButton = document.getElementById(`slot-${currentWord}-${i}`);
-    deactivateButton(currentButton);
+    const button = document.getElementById(`slot-${currentWord}-${i}`);
+    deactivateButton(button);
   }
   currentWord++;
   currentLetter = 0;
@@ -196,20 +219,58 @@ const storeYellows = function() {
 }
 
 // Clears out master data for a fresh update
-const clearMaster = function() {
+const clearSearchData = function() {
   knownLetters = ['','','','',''];
   goodLetters = [];
   badLetters = [];
   badPosition = [[],[],[],[],[]];
 }
 
+// Clears all data out of letter storage
+const clearLetterData = function() {
+  for (let i=0; i<26; i++) {
+    let letter = String.fromCharCode(97 + i);
+    letters[letter].clearData();
+  }
+}
+
+// Pulls fresh data from the letter slots
+const pullDataFromSlots = function() {
+  clearLetterData();
+  let lettersArray = [];
+  let colorsArray = [];
+  for (let i=0; i<=currentWord; i++) {
+    lettersArray.push([]);
+    colorsArray.push([]);
+    for (let j=0; j < 5; j++){
+      let button = document.getElementById(`slot-${i}-${j}`);
+      lettersArray[i].push(button.textContent.toLowerCase());
+      colorsArray[i].push(colorArray.indexOf(button.className));
+    }
+  }
+  for (let k=0; k<=currentWord; k++) {
+    let duplicateLetters = duplicateFinder(lettersArray[k]);
+    let duplicateColors = duplicateFinder(colorsArray[k]);
+    if (duplicateLetters.length > 0) {
+      for (let d=0; d<duplicateLetters.length; d++) {
+        let dupOne = lettersArray[k].indexOf(duplicateLetters[d]);
+        let dupTwo = lettersArray[k].indexOf(duplicateLetters[d], dupOne+1);
+        if (colorsArray[dupOne] > colorsArray[dupTwo]) {
+          if (colorsArray[dupOne] === 3) {
+            letters[duplicateLetters[d]].setData(3,2,)
+          }
+        }
+      }
+    }
+  }
+}
+
 // Update search letters
 const updateSearch = function() {
-  clearMaster();
+  clearSearchData();
   for (let i=0; i<26; i++) {
     let l = String.fromCharCode(97 + i);
-    let topColor = letters[l].keyboard;
-    if (topColor === 3) {
+    if (letters[l].base === 2) {
       for (let j=0; j < 5; j++) {
         let color = letters[l].slot[j];
         if (color === 3) {
@@ -220,16 +281,12 @@ const updateSearch = function() {
         } else {
           color = 2;
           letters[l].slot[j] = 2;
+          if (!goodLetters.includes(l)) {
+            goodLetters.push(l);
+          }
         }
       }
-    } else if (topColor === 2) {
-      if (!goodLetters.includes(l)) {
-        goodLetters.push(l);
-      }
-      for (let j=0; j < 5; j++) {
-        letters[l].slot[j] = 2;
-      }
-    } else if (topColor === 1) {
+    } else if (letters[l].base === 1) {
       if (!badLetters.includes(l)) {
         badLetters.push(l);
       }
@@ -239,18 +296,6 @@ const updateSearch = function() {
     };
   }
   storeYellows();
-}
-
-// Prints words
-const printWords = function() {
-  document.querySelector('h2').textContent = `Possible words (${possibleWords.length}):`;
-  const ul = document.getElementById('results');
-  ul.replaceChildren();
-  for (word of possibleWords) {
-    let newLi = document.createElement('li');
-    newLi.textContent = word;
-    ul.appendChild(newLi);
-  }
 }
 
 // Search for words that match the given parameters
@@ -287,8 +332,20 @@ const matchWords = function() {
   }
 }
 
+// Prints words
+const printWords = function() {
+  document.querySelector('h2').textContent = `Possible words (${possibleWords.length}):`;
+  const ul = document.getElementById('results');
+  ul.replaceChildren();
+  for (word of possibleWords) {
+    let newLi = document.createElement('li');
+    newLi.textContent = word;
+    ul.appendChild(newLi);
+  }
+}
+
 // Handles storing data from colors
-const updateWords = function() {
+const findWords = function() {
   convertToBlack();
   updateSearch();
   matchWords();
@@ -296,8 +353,8 @@ const updateWords = function() {
 }
 
 // Add event listeners
-window.addEventListener('keydown', setLetter)
-document.getElementById('update').addEventListener('click', updateWords);
-document.getElementById('new-word').addEventListener('click', newGuess)
+window.addEventListener('keydown', captureLetters)
+document.getElementById('update').addEventListener('click', findWords);
+document.getElementById('new-word').addEventListener('click', addWord)
 document.getElementById('reset').addEventListener('click', reset);
 
