@@ -38,10 +38,6 @@ class Letter {
     updateAllColors();
   }
 
-  setData(keyboard, base, slot, index) {
-
-  }
-
   clearData() {
     this.keyboard = 0;
     this.slot = [0,0,0,0,0];
@@ -192,16 +188,27 @@ const captureLetters = function(e) {
   } else {return false};
 }
 
-// Saves previous word and adds a new word
-const addWord = function() {
+// Deactivates all active buttons
+const deactivateRow = function() {
   for (let i=0; i<5; i++) {
     const button = document.getElementById(`slot-${currentWord}-${i}`);
     deactivateButton(button);
   }
+}
+
+const switchButtons = function () {
+  document.getElementById('add-word').hidden = !document.getElementById('add-word').hidden;
+  document.getElementById('submit-word').hidden = !document.getElementById('submit-word').hidden;
+}
+
+// Saves previous word and adds a new word
+const addWord = function() {
+  deactivateRow();
   currentWord++;
   currentLetter = 0;
-  backspace = true;
   document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+  backspace = true;
+  switchButtons();
 }
 
 // Stores bad positions from yellow text slots
@@ -344,17 +351,19 @@ const printWords = function() {
   }
 }
 
-// Handles storing data from colors
-const findWords = function() {
+// Handles submit word button functions
+const submitWord = function() {
   convertToBlack();
   updateSearch();
   matchWords();
   printWords();
+  deactivateRow();
+  switchButtons();
 }
 
 // Add event listeners
 window.addEventListener('keydown', captureLetters)
-document.getElementById('update').addEventListener('click', findWords);
-document.getElementById('new-word').addEventListener('click', addWord)
+document.getElementById('submit-word').addEventListener('click', submitWord);
+document.getElementById('add-word').addEventListener('click', addWord)
 document.getElementById('reset').addEventListener('click', reset);
 
