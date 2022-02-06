@@ -240,6 +240,13 @@ const switchButtons = function () {
   document.getElementById('submit-word').hidden = !document.getElementById('submit-word').hidden;
 }
 
+// Toggles keyboard visibility
+const toggleKeyboard = function (e) {
+  let keysOn = document.getElementById('keyboard');
+  keysOn.hidden = !keysOn.hidden; 
+  e.target.textContent = `${keysOn.hidden ? 'Show' : 'Hide'} Keyboard Interface`;
+}
+
 // Saves previous word and adds a new word
 const addWord = function() {
   deactivateRow();
@@ -405,4 +412,5 @@ const submitWord = function() {
 window.addEventListener('keydown', captureLetters);
 document.getElementById('submit-word').addEventListener('click', submitWord);
 document.getElementById('add-word').addEventListener('click', addWord);
+document.getElementById('keyboard-toggle').addEventListener('click', toggleKeyboard);
 document.getElementById('reset').addEventListener('click', reset);
