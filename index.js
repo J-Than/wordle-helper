@@ -47,11 +47,11 @@ class Letter {
   changeColorByKey() {
     if (this.keyboard > 1) {return false};
     if (this.keyboard === 1) {
-      this.keyboard = 0;
-      this.slot = [0,0,0,0,0];
+      this.clearData();
     } else {
       this.keyboard = 1;
       this.slot = [1,1,1,1,1];
+      this.base = 1;
     };
     updateAllColors();
   }
@@ -108,13 +108,49 @@ const deactivateButton = function(button) {
   button.removeEventListener('click', slotClick)
 }
 
-// Updates the color of the keyboard
-const updateKeyboardColor = function() {
+// Iterates a function over the entire word grid
+const slots = function(pass, check) {
+  for (let i=0; i<=currentWord; i++) {
+    for (let j=0; j<5; j++) {
+      let button = document.getElementById(`slot-${i}-${j}`);
+      if (pass(button, check) === true) {
+        return true;
+      };
+      pass(button, i, j);
+    }
+  }
+}
+
+// Iterates a function over the entire keyboard
+const keys = function(pass) {
   for (let i=0; i<26; i++) {
     let letter = String.fromCharCode(97 + i);
     let key = document.getElementById(`key-${letter}`);
-    key.className = keyColorArray[letters[letter].keyboard];
+    pass(key, letter);
   }
+}
+
+// Checks slots for a particular letter
+const checkLetter = function(button, letter) {
+  return button.textContent.toLowerCase() === letter;
+}
+
+// Updates keyboard activation based on rules
+const updateKeyActivation = function(key, letter) {
+  if (letters[letter].keyboard < 2) {
+    if (!slots(checkLetter, letter)) {
+      key.addEventListener('click', keyClick);
+    } else {
+      key.removeEventListener('click', keyClick);
+    }
+  } else {
+    key.removeEventListener('click', keyClick);
+  }
+}
+
+// Updates the color of the keyboard
+const updateKeyColor = function(key, letter) {
+  key.className = keyColorArray[letters[letter].keyboard];
 }
 
 // Handles click for slots
@@ -127,6 +163,7 @@ const slotClick = function(event) {
   }
   letters[button.textContent.toLowerCase()].changeColorBySlot(index);
   backspace = false;
+  keys(updateKeyActivation);
 }
 
 // Handles click for keyboard
@@ -134,6 +171,7 @@ const keyClick = function(event) {
   let key = event.target;
   let letter = key.textContent.toLowerCase();
   letters[letter].changeColorByKey();
+  console.log(`Key ${letter} pressed!`);
 }
 
 // Gives the slot button its initial color
@@ -160,7 +198,7 @@ const updateSlotColors = function() {
 // Update colors of all elements
 const updateAllColors = function() {
   updateSlotColors();
-  updateKeyboardColor();
+  keys(updateKeyColor);
 }
 
 // Converts white letters to black on update
@@ -196,6 +234,7 @@ const deactivateRow = function() {
   }
 }
 
+// Swaps the submit word and add word buttons based on which applies
 const switchButtons = function () {
   document.getElementById('add-word').hidden = !document.getElementById('add-word').hidden;
   document.getElementById('submit-word').hidden = !document.getElementById('submit-word').hidden;
@@ -358,12 +397,12 @@ const submitWord = function() {
   matchWords();
   printWords();
   deactivateRow();
+  keys(updateKeyActivation);
   switchButtons();
 }
 
 // Add event listeners
-window.addEventListener('keydown', captureLetters)
+window.addEventListener('keydown', captureLetters);
 document.getElementById('submit-word').addEventListener('click', submitWord);
-document.getElementById('add-word').addEventListener('click', addWord)
+document.getElementById('add-word').addEventListener('click', addWord);
 document.getElementById('reset').addEventListener('click', reset);
-
