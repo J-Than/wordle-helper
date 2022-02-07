@@ -125,6 +125,52 @@ const keys = function(pass) {
 // Build object array of letter objects
 keys((letter) => {letters[letter] = new Letter(letter)});
 
+// Adds a word to the page
+const newWordBuilder = function() {
+  let row = document.getElementById('word-boxes').insertRow();
+  row.id=`word-boxes-${currentWord}`;
+  let slot0 = document.createElement('td');
+  let slot1 = document.createElement('td');
+  let slot2 = document.createElement('td');
+  let slot3 = document.createElement('td');
+  let slot4 = document.createElement('td');
+  let button0 = document.createElement('button');
+  let button1 = document.createElement('button');
+  let button2 = document.createElement('button');
+  let button3 = document.createElement('button');
+  let button4 = document.createElement('button');
+  button0.type='button';
+  button0.className='no-letter';
+  button0.name=`slot-${currentWord}-0`;
+  button0.id=`slot-${currentWord}-0`;
+  button1.type='button';
+  button1.className='no-letter';
+  button1.name=`slot-${currentWord}-1`;
+  button1.id=`slot-${currentWord}-1`;
+  button2.type='button';
+  button2.className='no-letter';
+  button2.name=`slot-${currentWord}-2`;
+  button2.id=`slot-${currentWord}-2`;
+  button3.type='button';
+  button3.className='no-letter';
+  button3.name=`slot-${currentWord}-3`;
+  button3.id=`slot-${currentWord}-3`;
+  button4.type='button';
+  button4.className='no-letter';
+  button4.name=`slot-${currentWord}-4`;
+  button4.id=`slot-${currentWord}-4`;
+  slot0.appendChild(button0);
+  slot1.appendChild(button1);
+  slot2.appendChild(button2);
+  slot3.appendChild(button3);
+  slot4.appendChild(button4);
+  row.appendChild(slot0);
+  row.appendChild(slot1);
+  row.appendChild(slot2);
+  row.appendChild(slot3);
+  row.appendChild(slot4);
+}
+
 // Resets the page
 const reset = function() {
   window.location.reload();
@@ -147,7 +193,7 @@ const checkLetter = function(button, letter) {
 
 // Update slot colors
 const updateSlotColor = function(button, j) {
-  if (button.textContent !== '-') {
+  if (button.textContent != '') {
     button.className = slotColorArray[letters[button.textContent.toLowerCase()].slot[j]];
   }
 }
@@ -155,8 +201,10 @@ const updateSlotColor = function(button, j) {
 // Updates keyboard activation based on rules
 const lockKey = function(button) {
   let letter = button .textContent.toLowerCase();
-  letters[letter].lockLetter();
-  deactivate(document.getElementById(`key-${letter}`), keyClick);
+  if (letter) {
+    letters[letter].lockLetter();
+    deactivate(document.getElementById(`key-${letter}`), keyClick);
+  }
 }
 
 // Updates the color of the keyboard
@@ -223,7 +271,7 @@ const captureLetters = function(e) {
     if (e.which === 8) {
       if (currentLetter > 0) {currentLetter--;}
       button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-      button.textContent = '-';
+      button.textContent = '';
       button.className = 'no-letter';
     } else if (e.which > 64 && e.which < 91) {
       button.textContent = e.key;
@@ -243,9 +291,10 @@ const captureLetters = function(e) {
 const addWord = function() {
   row(lockKey);
   row(deactivate, slotClick);
+  submitWord();
   currentWord++;
   currentLetter = 0;
-  document.getElementById(`word-boxes-${currentWord}`).hidden=false;
+  newWordBuilder();
   typeActive = true;
   document.activeElement.blur();
 }
