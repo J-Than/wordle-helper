@@ -86,7 +86,7 @@ class Letter {
 }
 
 // Pull in word list
-fetch ('answerlist.json')
+fetch ('fulllist.json')
 .then (r => r.json())
 .then ((j) => {
   let wordArray = [];
