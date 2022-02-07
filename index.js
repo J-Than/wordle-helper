@@ -381,15 +381,15 @@ const matchWords = function() {
 
 // Prints words
 const printWords = function() {
-  document.querySelector('h2').textContent = `Possible words (${possibleWords.length}):`;
+  document.querySelector('h3').textContent = `Possible words (${possibleWords.length}):`;
   const ul = document.getElementById('results');
   ul.replaceChildren();
   for (word of possibleWords) {
     let newLi = document.createElement('li');
     newLi.textContent = word;
     ul.appendChild(newLi);
-    document.activeElement.blur();
   }
+  document.activeElement.blur();
 }
 
 // Handles submit word button functions
