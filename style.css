@@ -27,14 +27,12 @@ h1 {
   text-align: center;
   font-size: xx-large;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: white;
-  text-shadow: 2px 2px black;
+  color: black;
 }
 
 h3 {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: white;
-  text-shadow: 1px 1px black;
+  color: black;
 }
 
 #instructions {
@@ -50,7 +48,7 @@ h3 {
   height: 50px;
   font-size: xx-large;
   color: white;
-  text-shadow: black;
+  text-shadow: 1px 1px black;
   text-transform: uppercase;
 }
 
@@ -61,7 +59,6 @@ h3 {
   font-size: small;
   font-style: bold;
   color: white;
-  text-shadow: black;
   text-transform: uppercase;
 }
 
@@ -80,11 +77,13 @@ h3 {
 .white-letter, .white-key {
   background-color: white;
   color: black;
+  text-shadow: 0 0 black;
 }
 
 .no-letter {
   background-color: white;
   color: white;
+  text-shadow: 0 0 black;
 }
 
 ul {

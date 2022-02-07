@@ -22,10 +22,13 @@ class Letter {
     this.slot = [0,0,0,0,0];
     this.base = 0;
     this.locked = false;
+    this.yellow = false;
   }
 
   changeColorBySlot(index) {
-    if (this.slot[index] === 3) {this.slot[index]-= 3};
+    if (this.slot[index] === 3) {
+      this.slot[index] -= this.yellow ? 2 : 4;
+    }
     this.slot[index]++;
     if (this.slot[index] > 1) {
       this.base = 2;
@@ -48,24 +51,24 @@ class Letter {
   }
 
   changeColorByKey() {
+    let color = 1;
     if (this.keyboard === 3) {
-      this.clearData();
+      color = this.yellow ? 2 : 0;
     } else if (this.keyboard === 2) {
       if (row(checkLetter, 0, this.letter) === undefined) {
-        this.clearData();
+        color = 0;
       } else {
         this.keyboard = 3;
         this.slot[row(checkLetter, 0, this.letter)] = 3;
+        updateAllColors();
+        return null;
       }
     } else if (this.keyboard === 1) {
-      this.keyboard = 2;
-      this.slot = [2,2,2,2,2];
-      this.base = 2;
-    } else {
-      this.keyboard = 1;
-      this.slot = [1,1,1,1,1];
-      this.base = 1;
-    };
+      color = 2;
+    }
+    this.keyboard = color;
+    this.slot = [color,color,color,color,color];
+    this.base = color;
     updateAllColors();
   }
 
@@ -75,6 +78,10 @@ class Letter {
 
   lockLetter() {
     this.locked = true;
+  }
+
+  confirmYellow() {
+    this.yellow = true;
   }
 }
 
@@ -200,8 +207,8 @@ const updateSlotColor = function(button, j) {
 
 // Updates keyboard activation based on rules
 const lockKey = function(button) {
-  let letter = button .textContent.toLowerCase();
-  if (letter) {
+  let letter = button.textContent.toLowerCase();
+  if (letter && button.className !== 'yellow-letter') {
     letters[letter].lockLetter();
     deactivate(document.getElementById(`key-${letter}`), keyClick);
   }
@@ -287,24 +294,13 @@ const captureLetters = function(e) {
   }
 }
 
-// Saves previous word and adds a new word
-const addWord = function() {
-  row(lockKey);
-  row(deactivate, slotClick);
-  submitWord();
-  currentWord++;
-  currentLetter = 0;
-  newWordBuilder();
-  typeActive = true;
-  document.activeElement.blur();
-}
-
 // Stores bad positions from yellow text slots
 const storeYellows = function(button, j) {
   if (button.className === 'yellow-letter') {
     if (!badPosition[j].includes(button.textContent.toLowerCase())) {
       badPosition[j].push(button.textContent.toLowerCase());
     }
+    letters[button.textContent.toLowerCase()].confirmYellow();
   }
 }
 
@@ -384,6 +380,7 @@ const printWords = function() {
   document.querySelector('h3').textContent = `Possible words (${possibleWords.length}):`;
   const ul = document.getElementById('results');
   ul.replaceChildren();
+  ul.hidden = false;
   for (word of possibleWords) {
     let newLi = document.createElement('li');
     newLi.textContent = word;
@@ -400,6 +397,18 @@ const submitWord = function(e) {
   matchWords();
   printWords();
   typeActive = false;
+}
+
+// Saves previous word and adds a new word
+const addWord = function() {
+  row(lockKey);
+  row(deactivate, slotClick);
+  submitWord();
+  currentWord++;
+  currentLetter = 0;
+  newWordBuilder();
+  typeActive = true;
+  document.activeElement.blur();
 }
 
 // Add event listeners
