@@ -1,6 +1,6 @@
 body {
   font-family: Helvetica Neue, Arial, sans-serif;
-  background-color: lightgray;
+  background-color: white;
 }
 
 .reg-button {
@@ -9,10 +9,6 @@ body {
   background-color: gray;
   color: white;
   text-shadow: 1px 1px black;
-}
-
-footer {
-  background-color: lightgrey;
 }
 
 table, tr, td {
@@ -36,7 +32,7 @@ h3 {
 }
 
 #instructions {
-  background-color: white;
+  background-color: gray;
   border-width: 2px;
   border: black;
   padding-left: 4px;
@@ -74,10 +70,15 @@ h3 {
   background-color: gray;
 }
 
-.white-letter, .white-key {
+.white-letter {
   background-color: white;
   color: black;
   text-shadow: 0 0 black;
+}
+
+.white-key {
+  background-color: lightgray;
+  color: black;
 }
 
 .no-letter {
@@ -91,7 +92,7 @@ ul {
   -webkit-columns: 5;
   -moz-columns: 5;
   text-align: left;
-  background-color: white;
+  background-color: gray;
   color: black;
   list-style-type: none;
   padding: 4px;
