@@ -4,16 +4,38 @@
     <meta charset="utf-8" />
     <title>Wordle Assistant</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script type="text/javascript" src="index.js" defer></script>
   </head>
   <body>
     <header>
       <h1>WORDLE Assistant</h1>
     </header>
+    <nav class="navigation" id="navigation">
+      <table id="nav-table">
+        <tr>
+          <td><button type="button" class="reg-button" name="add-word" id="add-word">Add Word</button></td>
+          <td><button type="button" class="reg-button" name="word-list" id="word-list"><small>&#x1F4D6;</small> <span id="dict">WORDLE</span></button></td>
+          <td><button type="button" class="reg-button" name="reset" id="reset">Reset</button></td>
+          <td><button type="button" class="reg-button" name="instructions" id="instructions">?</button></td>
+        </tr>
+      </table>
+    </nav>
     <main>
-      <table id=layout style="max-width: 540px;">
-        <tr style="height: max-content;">
-          <td style="width: 60%">
+      <table id=layout style="max-width: 360px;">
+        <tr id="helper-text">
+          <td>
+            <p>1. Type in the letters of your word.</p>
+            <p>2. Press "Enter" at any time to confirm letters and display possible matches.</p>
+            <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
+            <p><small>Note: Adding a new word will lock all previous words from further changes.</small></p>
+            <p><small>Note: You can select from either the official WORDLE app word list or a more extensive Scrabble
+              dictionary word list with the button above.</small>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
             <table id="word-boxes">
               <tr id="word-boxes-0">
                 <td><button type="button" class="no-letter" name="slot-0-0" id="slot-0-0"></button></td>
@@ -24,76 +46,10 @@
               </tr>
             </table>
           </td>
-          <td style="max-width: 40%; text-align: left;" rowspan="3">
-            <section id="instructions">
-              <p>1. Type in the letters of your word.</p>
-              <p>2. Press "Enter" at any time to confirm letters and show possible matches.</p>
-              <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
-            </section>
-          </td>
-        </tr>
-        <tr style="height: min-content;">
-          <td>
-            <button type="button" class="reg-button" name="add-word" id="add-word">Add a new word</button>
-          </td>
-        </tr>
-        <tr style="height: min-content;">
-          <td style="text-align: left; font-size: small;">
-            Note: Adding a new word will lock the current word so that no further changes can be made.
-          </td>
-        </tr>
-        <tr>
-          <td rowspan="2">
-            <table id="keyboard">
-              <tr id="keyboard-top">
-                <td><button type="button" class="white-key" name="key-q" id="key-q">Q</button></td>
-                <td><button type="button" class="white-key" name="key-w" id="key-w">W</button></td>
-                <td><button type="button" class="white-key" name="key-e" id="key-e">E</button></td>
-                <td><button type="button" class="white-key" name="key-r" id="key-r">R</button></td>
-                <td><button type="button" class="white-key" name="key-t" id="key-t">T</button></td>
-                <td><button type="button" class="white-key" name="key-y" id="key-y">Y</button></td>
-                <td><button type="button" class="white-key" name="key-u" id="key-u">U</button></td>
-                <td><button type="button" class="white-key" name="key-i" id="key-i">I</button></td>
-                <td><button type="button" class="white-key" name="key-o" id="key-o">O</button></td>
-                <td><button type="button" class="white-key" name="key-p" id="key-p">P</button></td>
-              </tr>
-              <tr id="keyboard-middle">
-                <td><button type="button" class="white-key" name="key-a" id="key-a">A</button></td>
-                <td><button type="button" class="white-key" name="key-s" id="key-s">S</button></td>
-                <td><button type="button" class="white-key" name="key-d" id="key-d">D</button></td>
-                <td><button type="button" class="white-key" name="key-f" id="key-f">F</button></td>
-                <td><button type="button" class="white-key" name="key-g" id="key-g">G</button></td>
-                <td><button type="button" class="white-key" name="key-h" id="key-h">H</button></td>
-                <td><button type="button" class="white-key" name="key-j" id="key-j">J</button></td>
-                <td><button type="button" class="white-key" name="key-k" id="key-k">K</button></td>
-                <td><button type="button" class="white-key" name="key-l" id="key-l">L</button></td>
-                <td><button type="button" class="white-key" name="key-del" id="key-del" hidden>\</button></td>
-              </tr>
-              <tr id="keyboard-bottom">
-                <td></td>
-                <td><button type="button" class="white-key" name="key-z" id="key-z">Z</button></td>
-                <td><button type="button" class="white-key" name="key-x" id="key-x">X</button></td>
-                <td><button type="button" class="white-key" name="key-c" id="key-c">C</button></td>
-                <td><button type="button" class="white-key" name="key-v" id="key-v">V</button></td>
-                <td><button type="button" class="white-key" name="key-b" id="key-b">B</button></td>
-                <td><button type="button" class="white-key" name="key-n" id="key-n">N</button></td>
-                <td><button type="button" class="white-key" name="key-m" id="key-m">M</button></td>
-                <td colspan="2"><button type="button" class="enter" name="key-ent" id="key-ent" hidden>Ent</button></td>
-              </tr>
-            </table>
-          </td>
-          <td>
-              <button type="button" class="reg-button" name="submit-keys" id="submit-keys">Update word list</button>
-          </td>
         </tr>
         <tr>
           <td>
-            <button type="button" class="reg-button" name="reset" id="reset">Reset form</button>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <h3>Press "Enter" to see possible words</h3>
+            <h3>Press "Enter" for possible words</h3>
             <ul id="results" class="result-list" hidden>
             </ul>
           </td>
@@ -101,6 +57,43 @@
       </table>
     </main>
     <footer>
+      <table id="keyboard">
+        <tr id="keyboard-top">
+          <td><button type="button" class="white-key" name="key-q" id="key-q">Q</button></td>
+          <td><button type="button" class="white-key" name="key-w" id="key-w">W</button></td>
+          <td><button type="button" class="white-key" name="key-e" id="key-e">E</button></td>
+          <td><button type="button" class="white-key" name="key-r" id="key-r">R</button></td>
+          <td><button type="button" class="white-key" name="key-t" id="key-t">T</button></td>
+          <td><button type="button" class="white-key" name="key-y" id="key-y">Y</button></td>
+          <td><button type="button" class="white-key" name="key-u" id="key-u">U</button></td>
+          <td><button type="button" class="white-key" name="key-i" id="key-i">I</button></td>
+          <td><button type="button" class="white-key" name="key-o" id="key-o">O</button></td>
+          <td><button type="button" class="white-key" name="key-p" id="key-p">P</button></td>
+        </tr>
+        <tr id="keyboard-middle">
+          <td><button type="button" class="white-key" name="key-a" id="key-a">A</button></td>
+          <td><button type="button" class="white-key" name="key-s" id="key-s">S</button></td>
+          <td><button type="button" class="white-key" name="key-d" id="key-d">D</button></td>
+          <td><button type="button" class="white-key" name="key-f" id="key-f">F</button></td>
+          <td><button type="button" class="white-key" name="key-g" id="key-g">G</button></td>
+          <td><button type="button" class="white-key" name="key-h" id="key-h">H</button></td>
+          <td><button type="button" class="white-key" name="key-j" id="key-j">J</button></td>
+          <td><button type="button" class="white-key" name="key-k" id="key-k">K</button></td>
+          <td><button type="button" class="white-key" name="key-l" id="key-l">L</button></td>
+          <td></td>
+        </tr>
+        <tr id="keyboard-bottom">
+          <td><i class="material-icons" style="font-size:24pt" id="key-back">backspace</i></td>
+          <td><button type="button" class="white-key" name="key-z" id="key-z">Z</button></td>
+          <td><button type="button" class="white-key" name="key-x" id="key-x">X</button></td>
+          <td><button type="button" class="white-key" name="key-c" id="key-c">C</button></td>
+          <td><button type="button" class="white-key" name="key-v" id="key-v">V</button></td>
+          <td><button type="button" class="white-key" name="key-b" id="key-b">B</button></td>
+          <td><button type="button" class="white-key" name="key-n" id="key-n">N</button></td>
+          <td><button type="button" class="white-key" name="key-m" id="key-m">M</button></td>
+          <td colspan="2"><button type="button" class="enter" name="key-ent" id="key-ent">&crarr;</button></td>
+        </tr>
+      </table>
       <p style="text-align: center;"><small>Created by Jarod Wilson, February 2022.</small></p>
     </footer>
   </body>

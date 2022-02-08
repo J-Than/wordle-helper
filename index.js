@@ -10,9 +10,13 @@ let badLetters = [];
 let badPosition = [[],[],[],[],[]];
 let currentWord = 0;
 let currentLetter = 0;
+let wordleWords;
+let scrabbleWords;
 let allWords;
 let possibleWords;
 let typeActive = true;
+let wordList = 'scrabble';
+let instructions = true;
 
 // Declare classes
 class Letter {
@@ -85,17 +89,56 @@ class Letter {
   }
 }
 
-// Pull in word list
-fetch ('answerlist.json')
-.then (r => r.json())
-.then ((j) => {
-  let wordArray = [];
-  for (let i=0; i < j.length; i++) {
-    wordArray.push(j[i]['word']);
+// Pull in Wordle word list
+const pullWordle = function () {
+  fetch ('answerlist.json')
+  .then (r => r.json())
+  .then ((j) => {
+    let wordArray = [];
+    for (let i=0; i < j.length; i++) {
+      wordArray.push(j[i]['word']);
+    }
+    wordleWords = wordArray;
+    allWords = wordArray;
+  })
+}
+
+// Pull in reduced Scrabble word list
+const pullScrabble = function () {
+  fetch ('medlist.json')
+  .then (r => r.json())
+  .then ((j) => {
+    let wordArray = [];
+    for (let i=0; i < j.length; i++) {
+      wordArray.push(j[i]['word']);
+    }
+    scrabbleWords = wordArray;
+    pullWordle();
+  })
+}
+
+// Starts loading word lists
+pullScrabble();
+
+// Changes the current word list
+const swapWordList = function () {
+  if (wordList === 'wordle') {
+    allWords = scrabbleWords;
+    document.getElementById('dict').innerText = 'Scrabble';
+    wordList = "scrabble";
+  } else if (wordList === 'scrabble') {
+    allWords = wordleWords;
+    document.getElementById('dict').innerText = 'WORDLE';
+    wordList = "wordle";
   }
-  allWords = wordArray;
-  possibleWords = wordArray;
-})
+}
+
+// Toggles visibility of instructions & words
+const infoToggle = function () {
+  instructions = !instructions;
+  document.getElementById('helper-text').hidden = !instructions;
+  document.getElementById('results').hidden = instructions;
+}
 
 // Iterates a function over the entire word grid
 const slots = function(pass) {
@@ -219,12 +262,18 @@ const updateKeyColor = function(letter, key) {
   key.className = keyColorArray[letters[letter].keyboard];
 }
 
-// Updates the locks on the keyboard
-const updateKeyLock = function(letter, key) {
-  if (letters[letter].locked) {
-    deactivate(key, keyClick);
+// Updates the function of the keyboard
+const updateKeyFunction = function(letter, key) {
+  if (typeActive === false) {
+    deactivate(key, typeInput);
+    if (letters[letter].locked) {
+      deactivate(key, keyClick);
+    } else {
+      activate(key, keyClick);
+    }
   } else {
-    activate(key, keyClick);
+    deactivate(key, keyClick);
+    activate(key, typeInput);
   }
 }
 
@@ -257,6 +306,25 @@ const keyClick = function(e) {
   let letter = key.textContent.toLowerCase();
   letters[letter].changeColorByKey();
   document.activeElement.blur();
+}
+
+// Backspace function for mouse click
+const backspaceClick = function(e) {
+  if (typeActive === true) {
+    if (currentLetter > 0) {currentLetter--;}
+    button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
+    button.textContent = '';
+    button.className = 'no-letter';
+  }
+}
+
+
+// Builds functionality for keyboard to work for text input
+const typeInput = function(e) {
+  let button = document.getElementById(`slot-${currentWord}-${currentLetter}`)
+  button.textContent = e.target.textContent.toLowerCase();
+  initializeSlot(button, currentLetter);
+  if (currentLetter < 5) {currentLetter++;}
 }
 
 // Gives the slot button its initial values
@@ -377,10 +445,12 @@ const matchWords = function() {
 
 // Prints words
 const printWords = function() {
-  document.querySelector('h3').textContent = `Possible words (${possibleWords.length}):`;
+  document.querySelector('h3').textContent = `Possible words (${possibleWords.length})`;
   const ul = document.getElementById('results');
   ul.replaceChildren();
   ul.hidden = false;
+  document.getElementById('helper-text').hidden = true;
+  instructions = false;
   for (word of possibleWords) {
     let newLi = document.createElement('li');
     newLi.textContent = word;
@@ -397,6 +467,7 @@ const submitWord = function(e) {
   matchWords();
   printWords();
   typeActive = false;
+  keys(updateKeyFunction);
 }
 
 // Saves previous word and adds a new word
@@ -408,12 +479,17 @@ const addWord = function() {
   currentLetter = 0;
   newWordBuilder();
   typeActive = true;
+  keys(updateKeyFunction);
   document.activeElement.blur();
 }
 
 // Add event listeners
-keys(updateKeyLock);
+keys(updateKeyFunction);
+swapWordList();
 window.addEventListener('keydown', captureLetters);
 document.getElementById('add-word').addEventListener('click', addWord);
-document.getElementById('submit-keys').addEventListener('click', submitWord);
+document.getElementById('word-list').addEventListener('click', swapWordList);
 document.getElementById('reset').addEventListener('click', reset);
+document.getElementById('instructions').addEventListener('click', infoToggle);
+document.getElementById('key-ent').addEventListener('click', submitWord);
+document.getElementById('key-back').addEventListener('click', backspaceClick);

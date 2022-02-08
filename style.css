@@ -1,6 +1,23 @@
+html {
+  height: 100%;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
   font-family: Helvetica Neue, Arial, sans-serif;
   background-color: white;
+}
+
+main {
+  -ms-flex: 1;
+  flex: 1;
+  padding: 10px;
+}
+
+footer {
+  padding: 10px;
 }
 
 .reg-button {
@@ -9,6 +26,7 @@ body {
   background-color: gray;
   color: white;
   text-shadow: 1px 1px black;
+  height: 30px;
 }
 
 table, tr, td {
@@ -17,6 +35,11 @@ table, tr, td {
   border-spacing: 0px;
   text-align: center;
   vertical-align: top;
+}
+
+#nav-table td {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 h1 {
@@ -31,10 +54,11 @@ h3 {
   color: black;
 }
 
-#instructions {
+#helper-text {
   background-color: #eee;
   padding-left: 4px;
   padding-right: 4px;
+  text-align: left;
 }
 
 .yellow-letter, .green-letter, .black-letter, .white-letter, .no-letter {
@@ -47,10 +71,10 @@ h3 {
 }
 
 .yellow-key, .green-key, .black-key, .white-key {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   text-align: center;
-  font-size: small;
+  font-size: medium;
   font-style: bold;
   color: white;
   text-transform: uppercase;
@@ -85,6 +109,17 @@ h3 {
   text-shadow: 0 0 black;
 }
 
+.enter {
+  width: 66px;
+  height: 32px;
+  text-align: center;
+  font-size: medium;
+  font-style: bold;
+  background-color: gray;
+  color: white;
+  text-transform: uppercase;
+}
+
 ul {
   columns: 5;
   -webkit-columns: 5;
@@ -95,4 +130,6 @@ ul {
   list-style-type: none;
   padding: 4px;
   margin: 0;
+  height: 200px;
+  overflow-x: scroll;
 }
