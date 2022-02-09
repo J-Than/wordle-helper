@@ -71,6 +71,13 @@ h1 {
 h3 {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: black;
+  margin-top: 0.1em;
+  margin-bottom: 0.2em;
+}
+
+p {
+  margin-top: .5em;
+  margin-bottom: .5em;
 }
 
 #helper-text {
@@ -149,6 +156,6 @@ ul {
   list-style-type: none;
   padding: 4px;
   margin: 0;
-  height: 232px;
+  height: 216px;
   overflow-x: scroll;
 }

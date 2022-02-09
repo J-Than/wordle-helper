@@ -180,7 +180,7 @@ keys((letter) => {letters[letter] = new Letter(letter)});
 // Adds a word to the page
 const newWordBuilder = function() {
   let row;
-  if (currentWord > 2) {
+  if (currentWord > 3) {
     row = document.getElementById('word-boxes').insertRow();
     row.id=`word-boxes-${currentWord}`;
   } else {
