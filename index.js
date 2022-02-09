@@ -124,7 +124,7 @@ pullScrabble();
 const swapWordList = function () {
   if (wordList === 'wordle') {
     allWords = scrabbleWords;
-    document.getElementById('dict').innerText = 'Scrabble';
+    document.getElementById('dict').innerText = 'Larger';
     wordList = "scrabble";
   } else if (wordList === 'scrabble') {
     allWords = wordleWords;
