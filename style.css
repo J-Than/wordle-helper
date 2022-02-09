@@ -15,14 +15,14 @@ header {
   top: 0;
   align-content: center;
   width: 100%;
-  height: 72px;
+  height: 80px;
 }
 
 main {
   -ms-flex: 1;
   flex: 1;
   position: fixed;
-  top: 80px;
+  top: 84px;
   align-content: center;
   width: 100%;
   overflow: auto;
@@ -38,12 +38,12 @@ footer {
 }
 
 .reg-button {
-  font-size: large;
+  font-size: 1.25em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #444;
   color: white;
   text-shadow: 1px 1px black;
-  height: 30px;
+  height: 35px;
 }
 
 table, tr, td {
@@ -83,8 +83,10 @@ p {
 
 #helper-text {
   background-color: #eee;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: .5em;
+  padding-right: .5em;
+  padding-top: .1em;
+  padding-bottom: .1em;
   text-align: left;
 }
 
