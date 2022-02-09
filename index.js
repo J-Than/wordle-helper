@@ -14,8 +14,8 @@ let wordleWords;
 let scrabbleWords;
 let allWords;
 let possibleWords;
-let typeActive = true;
 let wordList = 'scrabble';
+let typeActive = true;
 let instructions = true;
 
 // Declare classes
@@ -138,6 +138,8 @@ const infoToggle = function () {
   instructions = !instructions;
   document.getElementById('helper-text').hidden = !instructions;
   document.getElementById('results').hidden = instructions;
+  if (instructions) {document.querySelector('h3').innerText = 'Instructions:'}
+  else {document.querySelector('h3').innerText = `Possible words (${possibleWords.length})`}
 }
 
 // Iterates a function over the entire word grid
@@ -177,8 +179,13 @@ keys((letter) => {letters[letter] = new Letter(letter)});
 
 // Adds a word to the page
 const newWordBuilder = function() {
-  let row = document.getElementById('word-boxes').insertRow();
-  row.id=`word-boxes-${currentWord}`;
+  let row;
+  if (currentWord > 2) {
+    row = document.getElementById('word-boxes').insertRow();
+    row.id=`word-boxes-${currentWord}`;
+  } else {
+    row = document.getElementById(`word-boxes-${currentWord}`)
+  }
   let slot0 = document.createElement('td');
   let slot1 = document.createElement('td');
   let slot2 = document.createElement('td');
@@ -317,7 +324,6 @@ const backspaceClick = function(e) {
     button.className = 'no-letter';
   }
 }
-
 
 // Builds functionality for keyboard to work for text input
 const typeInput = function(e) {

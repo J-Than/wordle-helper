@@ -5,25 +5,41 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  height: 100%;
   font-family: Helvetica Neue, Arial, sans-serif;
   background-color: white;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  align-content: center;
+  width: 100%;
+  height: 72px;
 }
 
 main {
   -ms-flex: 1;
   flex: 1;
-  padding: 10px;
+  position: fixed;
+  top: 80px;
+  align-content: center;
+  width: 100%;
+  overflow: auto;
 }
 
 footer {
-  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  align-content: center;
+  width: 100%;
+  height: 105px;
 }
 
 .reg-button {
   font-size: large;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: gray;
+  background-color: #444;
   color: white;
   text-shadow: 1px 1px black;
   height: 30px;
@@ -42,11 +58,14 @@ table, tr, td {
   padding-right: 4px;
 }
 
+
 h1 {
   text-align: center;
-  font-size: xx-large;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: black;
+  font-size: 2em;
+  margin-top: 0.1em;
+  margin-bottom: 0.2em;
 }
 
 h3 {
@@ -115,21 +134,21 @@ h3 {
   text-align: center;
   font-size: medium;
   font-style: bold;
-  background-color: gray;
-  color: white;
+  background-color: #ccc;
+  color: black;
   text-transform: uppercase;
 }
 
 ul {
-  columns: 5;
-  -webkit-columns: 5;
-  -moz-columns: 5;
+  columns: 4;
+  -webkit-columns: 4;
+  -moz-columns: 4;
   text-align: left;
   background-color: #eee;
   color: black;
   list-style-type: none;
   padding: 4px;
   margin: 0;
-  height: 200px;
+  height: 232px;
   overflow-x: scroll;
 }

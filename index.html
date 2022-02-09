@@ -11,30 +11,19 @@
   <body>
     <header>
       <h1>WORDLE Assistant</h1>
+      <nav class="navigation" id="navigation">
+        <table id="nav-table">
+          <tr>
+            <td><button type="button" class="reg-button" name="add-word" id="add-word">Add Word</button></td>
+            <td><button type="button" class="reg-button" name="word-list" id="word-list"><small>&#x1F4D6;</small> <span id="dict">WORDLE</span></button></td>
+            <td><button type="button" class="reg-button" name="reset" id="reset">Reset</button></td>
+            <td><button type="button" class="reg-button" name="instructions" id="instructions">?</button></td>
+          </tr>
+        </table>
+      </nav>
     </header>
-    <nav class="navigation" id="navigation">
-      <table id="nav-table">
-        <tr>
-          <td><button type="button" class="reg-button" name="add-word" id="add-word">Add Word</button></td>
-          <td><button type="button" class="reg-button" name="word-list" id="word-list"><small>&#x1F4D6;</small> <span id="dict">WORDLE</span></button></td>
-          <td><button type="button" class="reg-button" name="reset" id="reset">Reset</button></td>
-          <td><button type="button" class="reg-button" name="instructions" id="instructions">?</button></td>
-        </tr>
-      </table>
-    </nav>
     <main>
-      <table id=layout style="max-width: 360px;">
-        <tr id="helper-text">
-          <td>
-            <p>1. Type in the letters of your word.</p>
-            <p>2. Press "Enter" at any time to confirm letters and display possible matches.</p>
-            <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
-            <p><small>Note: Adding a new word will lock all previous words from further changes.</small></p>
-            <p><small>Note: You can select from either the official WORDLE app word list or a more extensive Scrabble
-              dictionary word list with the button above.</small>
-            </p>
-          </td>
-        </tr>
+      <table id=layout style="width: 340px;">
         <tr>
           <td>
             <table id="word-boxes">
@@ -45,12 +34,24 @@
                 <td><button type="button" class="no-letter" name="slot-0-3" id="slot-0-3"></button></td>
                 <td><button type="button" class="no-letter" name="slot-0-4" id="slot-0-4"></button></td>
               </tr>
+              <tr id="word-boxes-1" style="height: 54px;">
+              </tr>
+              <tr id="word-boxes-2" style="height: 54px;">
+              </tr>
             </table>
           </td>
         </tr>
-        <tr>
           <td>
-            <h3>Press "Enter" for possible words</h3>
+            <h3>Instructions:</h3>
+            <div id="helper-text">
+              <p>1. Type in the letters of your word.</p>
+              <p>2. Press "Enter" at any time to confirm letters and display possible matches.</p>
+              <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
+              <p><small>Note: Adding a new word will lock all previous words from further changes.</small></p>
+              <p><small>Note: You can select from either the official WORDLE app word list or a more extensive Scrabble
+                dictionary word list with the button above.</small>
+              </p>
+            </div>
             <ul id="results" class="result-list" hidden>
             </ul>
           </td>
@@ -95,7 +96,6 @@
           <td colspan="2"><button type="button" class="enter" name="key-ent" id="key-ent">&crarr;</button></td>
         </tr>
       </table>
-      <p style="text-align: center;"><small>Created by Jarod Wilson, February 2022.</small></p>
     </footer>
   </body>
 </html>
