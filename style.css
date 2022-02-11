@@ -89,6 +89,12 @@ p {
   padding-top: .1em;
   padding-bottom: .1em;
   text-align: left;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 370px;
 }
 
 .yellow-letter, .green-letter, .black-letter, .white-letter, .no-letter {

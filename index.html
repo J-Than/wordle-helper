@@ -23,6 +23,20 @@
       </nav>
     </header>
     <main>
+      <div id="helper-text">
+        <table>
+          <tr>
+            <td style="text-align: left;">
+              <p>1. Type in the letters of your word.</p>
+              <p>2. Press "Update" (or "Enter") at any time to confirm letters and display possible matches.</p>
+              <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
+              <hr />
+              <p>Note: Adding a new word will lock all previous words from further changes.</p>
+              <p>The default word list is from WORDLE offical site. Some apps may use different lists. Use the top center button to switch to a larger list.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
       <table id=layout style="width: 370px;">
         <tr>
           <td>
@@ -34,25 +48,12 @@
                 <td><button type="button" class="no-letter" name="slot-0-3" id="slot-0-3"></button></td>
                 <td><button type="button" class="no-letter" name="slot-0-4" id="slot-0-4"></button></td>
               </tr>
-              <tr id="word-boxes-1" style="height: 54px;">
-              </tr>
-              <tr id="word-boxes-2" style="height: 54px;">
-              </tr>
-              <tr id="word-boxes-3" style="height: 54px;">
-              </tr>
             </table>
           </td>
+          <tr style="height: 27px"></tr>
         </tr>
           <td>
             <h3>Instructions:</h3>
-            <div id="helper-text">
-              <p>1. Type in the letters of your word.</p>
-              <p>2. Press "Update" (or "Enter") at any time to confirm letters and display possible matches.</p>
-              <p>3. Change colors by tapping the corresponding letter key or clicking the box.</p>
-              <hr />
-              <p>Note: Adding a new word will lock all previous words from further changes.</p>
-              <p>The default word list is from WORDLE offical site. Some apps may use different lists. Use the top center button to switch to a larger list.</p>
-            </div>
             <ul id="results" class="result-list" hidden>
             </ul>
           </td>
