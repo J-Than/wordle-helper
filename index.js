@@ -348,6 +348,9 @@ const captureLetters = function(e) {
   if (e.which === 13) {
     submitWord();
   }
+  if (e.which === 9) {
+    addWord();
+  }
   if (typeActive === true) {
     if (e.which === 8) {
       if (currentLetter > 0) {currentLetter--;}

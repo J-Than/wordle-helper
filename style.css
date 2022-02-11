@@ -44,6 +44,7 @@ footer {
   color: white;
   text-shadow: 1px 1px black;
   height: 35px;
+  border-radius: 8px;
 }
 
 table, tr, td {
@@ -107,6 +108,7 @@ p {
   font-style: bold;
   color: white;
   text-transform: uppercase;
+  border-radius: 8px;
 }
 
 .yellow-letter, .yellow-key {
@@ -159,6 +161,6 @@ ul {
   list-style-type: none;
   padding: 4px;
   margin: 0;
-  height: 216px;
+  height: 148px;
   overflow-x: scroll;
 }
