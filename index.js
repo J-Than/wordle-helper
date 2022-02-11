@@ -12,9 +12,10 @@ let currentWord = 0;
 let currentLetter = 0;
 let wordleWords;
 let scrabbleWords;
+let fullWords;
 let allWords;
 let possibleWords;
-let wordList = 'scrabble';
+let wordList = 'full';
 let typeActive = true;
 let instructions = true;
 
@@ -117,8 +118,22 @@ const pullScrabble = function () {
   })
 }
 
+// Pull in full word list
+const pullFull = function () {
+  fetch ('fulllist.json')
+  .then (r => r.json())
+  .then ((j) => {
+    let wordArray = [];
+    for (let i=0; i < j.length; i++) {
+      wordArray.push(j[i]['word']);
+    }
+    fullWords = wordArray;
+    pullScrabble();
+  })
+}
+
 // Starts loading word lists
-pullScrabble();
+pullFull();
 
 // Changes the current word list
 const swapWordList = function () {
@@ -127,6 +142,10 @@ const swapWordList = function () {
     document.getElementById('dict').innerText = 'Larger';
     wordList = "scrabble";
   } else if (wordList === 'scrabble') {
+    allWords = fullWords;
+    document.getElementById('dict').innerText = 'Largest';
+    wordList = "full";
+  } else if (wordList === 'full') {
     allWords = wordleWords;
     document.getElementById('dict').innerText = 'WORDLE';
     wordList = "wordle";
