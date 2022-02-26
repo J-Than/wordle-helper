@@ -92,7 +92,7 @@ class Letter {
 
 // Pull in Wordle word list
 const pullWordle = function () {
-  fetch ('answerlist.json')
+  fetch ('nytanswerlist.json')
   .then (r => r.json())
   .then ((j) => {
     let wordArray = [];
