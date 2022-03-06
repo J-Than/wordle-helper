@@ -14,9 +14,11 @@ The formatting of the app, such as color choices and rough layout, are designed 
 
 Instead of working from a hidden but pre-determined "answer" word, this app asks the user to manually change the colors of the specific letters based on what the game app has shown. It will then display all possible remaining matches from within the WORDLE dictionary based on the inclusion or disinclusion of letters.
 
+Larger lists of source words are also available. These include one custom list of semi-common five-letter words, many of which were excluded from the WORDLE answer list, such as plural words. The lists also include a very comprehensive list of words that should cover even very obscure words, in case an app pulls from such a list.
+
 ## Data
 
-The word list used by this app is pulled from the code of the original WORDLE website, which is not an exhaustive list of all possible 5-letter words. It includes only the words that are possible answer words for WORDLE.
+The word list used by this app is pulled from the code of the WORDLE website, which is not an exhaustive list of all possible 5-letter words. It includes only the words that are possible answer words for WORDLE. The most comprehensive list of words is pulled from the full list of allowed guesses on WORDLE. The medium list is one that I curated myself.
 
 The app does not check user inputs against any word list; for the purposes of "exploration," it is easiest to leave options open.
 

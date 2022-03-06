@@ -368,10 +368,7 @@ const captureLetters = function(e) {
   }
   if (typeActive === true) {
     if (e.which === 8) {
-      if (currentLetter > 0) {currentLetter--;}
-      button = document.getElementById(`slot-${currentWord}-${currentLetter}`);
-      button.textContent = '';
-      button.className = 'no-letter';
+      backspaceClick();
     } else if (e.which > 64 && e.which < 91) {
       button.textContent = e.key;
       initializeSlot(button, currentLetter);
