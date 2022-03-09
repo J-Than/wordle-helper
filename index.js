@@ -15,7 +15,7 @@ let scrabbleWords;
 let fullWords;
 let allWords;
 let possibleWords;
-let wordList = 'full';
+let wordList = 'wordle';
 let typeActive = true;
 let instructions = true;
 
@@ -150,6 +150,7 @@ const swapWordList = function () {
     document.getElementById('dict').innerText = 'WORDLE';
     wordList = "wordle";
   }
+  submitWord();
 }
 
 // Toggles visibility of instructions & words
@@ -197,6 +198,7 @@ const keys = function(pass) {
 keys((letter) => {letters[letter] = new Letter(letter)});
 
 // Adds a word to the page
+// Helper function to iterate 5 times through
 const newWordBuilder = function() {
   let row;
   row = document.getElementById('word-boxes').insertRow();
@@ -431,6 +433,7 @@ const updateSearch = function(letter) {
 }
 
 // Search for words that match the given parameters
+// Can I reduce iteration?
 const matchWords = function() {
   let newWords = allWords;
   possibleWords = allWords;
@@ -506,7 +509,6 @@ const addWord = function() {
 
 // Add event listeners
 keys(updateKeyFunction);
-swapWordList();
 window.addEventListener('keydown', captureLetters);
 document.getElementById('add-word').addEventListener('click', addWord);
 document.getElementById('word-list').addEventListener('click', swapWordList);
